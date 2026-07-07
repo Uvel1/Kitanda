@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minha Conta - ByClick</title>
+    <title>Minha Conta - Kitanda</title>
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
-    <meta name="description" content="Painel do comprador ByClick — acompanhe pedidos, gerir perfil e explorar produtos.">
+    <meta name="description" content="Painel do comprador Kitanda — acompanhe pedidos, gerir perfil e explorar produtos.">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../../css/painel_comprador.css">
@@ -16,7 +16,7 @@
 
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <span>ByClick</span>
+        <span>Kitanda</span>
     </div>
     <div class="profile-section">
         <img src="https://via.placeholder.com/150" alt="Foto de perfil" class="profile-img" data-user-photo>
@@ -29,6 +29,8 @@
         <div class="nav-label">Menu</div>
         <a href="#" class="nav-item active"><i class="fa-solid fa-house"></i> Página Inicial</a>
         <a href="../../explorar/" class="nav-item"><i class="fa-solid fa-compass"></i> Explorar</a>
+        <a href="mensagens.html" class="nav-item"><i class="fa-solid fa-envelope"></i> Mensagens</a>
+        <a href="notificacoes.html" class="nav-item"><i class="fa-solid fa-bell"></i> Notificações</a>
         <a href="#" class="nav-item"><i class="fa-solid fa-clipboard-list"></i> Meus Pedidos</a>
         <a href="#" class="nav-item"><i class="fa-solid fa-heart"></i> Favoritos</a>
         <a href="#" class="nav-item"><i class="fa-solid fa-user-pen"></i> Meu Perfil</a>
@@ -40,7 +42,7 @@
 <div class="main-content">
     <header class="topbar">
         <div class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></div>
-        <div class="topbar-logo">ByClick</div>
+        <div class="topbar-logo">Kitanda</div>
         <div class="topbar-actions">
             <div class="icon-btn" onclick="window.location.href='notificacoes.html'" style="cursor:pointer;"><i class="fa-regular fa-bell"></i><span class="badge">0</span></div>
             <div class="topbar-divider"></div>
@@ -126,7 +128,7 @@
                         <div class="notif-item">
                             <div class="notif-icon" style="background: var(--blue);"><i class="fa-solid fa-info-circle"></i></div>
                             <div>
-                                <div class="notif-text">Bem-vindo ao ByClick! 🎉 Explore os melhores produtos de Angola.</div>
+                                <div class="notif-text">Bem-vindo ao Kitanda! 🎉 Explore os melhores produtos de Angola.</div>
                                 <span class="notif-time">Agora</span>
                             </div>
                         </div>
@@ -350,5 +352,6 @@
 <script src="../../js/api.js"></script>
 <script src="../../js/toast.js"></script>
 <script src="../../js/painel_comprador.js"></script>
+<script src="../../js/chat.js"></script>
 </body>
 </html>

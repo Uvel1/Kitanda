@@ -1,5 +1,5 @@
 /**
- * Explorar Produtos — ByClick
+ * Explorar Produtos — Kitanda
  * Carrega produtos da API e gere filtros/pesquisa.
  */
 
@@ -15,6 +15,20 @@ let searchTimeout = null;
 document.addEventListener('DOMContentLoaded', async function() {
   // Auth state - show/hide buttons
   atualizarNavbarAuth();
+
+  // Pedir localização (opcional, não bloqueia)
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        window.userLat = position.coords.latitude;
+        window.userLon = position.coords.longitude;
+        carregarProdutos(); // recarrega com a localização
+      },
+      (error) => {
+        console.log("Geolocalização não permitida ou falhou:", error);
+      }
+    );
+  }
 
   // Category pills
   document.getElementById('categoriesBar')?.addEventListener('click', function(e) {
@@ -90,7 +104,19 @@ async function carregarProdutos() {
     const searchTerm = document.getElementById('searchInput')?.value.trim() || '';
     let url = `/explorar/pesquisa?`;
     if (searchTerm) url += `q=${encodeURIComponent(searchTerm)}&`;
-    if (tipoAtivo !== 'all') url += `tipo=${tipoAtivo}`;
+    if (tipoAtivo !== 'all') url += `tipo=${tipoAtivo}&`;
+
+    // Localização do utilizador logado
+    const userData = JSON.parse(localStorage.getItem('usuario') || '{}');
+    if (userData.endereco) {
+      if (userData.endereco.provincia) url += `provincia=${encodeURIComponent(userData.endereco.provincia)}&`;
+      if (userData.endereco.municipio) url += `municipio=${encodeURIComponent(userData.endereco.municipio)}&`;
+    }
+    
+    // Se tiver coordenadas locais ativas (ex: se pediu permissão antes)
+    if (window.userLat && window.userLon) {
+      url += `lat=${window.userLat}&lon=${window.userLon}&`;
+    }
 
     const response = await apiCall('GET', url);
     todosOsProdutos = response || [];
@@ -255,7 +281,7 @@ function renderizarProdutos(produtos) {
 
 
 function isFavorito(id, tipo) {
-  const favoritos = JSON.parse(localStorage.getItem('byclick_favoritos') || '[]');
+  const favoritos = JSON.parse(localStorage.getItem('kitanda_favoritos') || '[]');
   return favoritos.some(f => f.id === id && f.tipo === tipo);
 }
 
@@ -263,7 +289,7 @@ window.toggleFavorito = function(event, btn, id, tipo) {
   event.preventDefault();
   event.stopPropagation();
   
-  let favoritos = JSON.parse(localStorage.getItem('byclick_favoritos') || '[]');
+  let favoritos = JSON.parse(localStorage.getItem('kitanda_favoritos') || '[]');
   const favIndex = favoritos.findIndex(f => f.id === id && f.tipo === tipo);
   const icon = btn.querySelector('i');
   
@@ -277,5 +303,5 @@ window.toggleFavorito = function(event, btn, id, tipo) {
     icon.style.color = '#C84B1F';
   }
   
-  localStorage.setItem('byclick_favoritos', JSON.stringify(favoritos));
+  localStorage.setItem('kitanda_favoritos', JSON.stringify(favoritos));
 };

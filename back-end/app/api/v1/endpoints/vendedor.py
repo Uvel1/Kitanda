@@ -10,7 +10,7 @@ from typing import Optional, List
 
 from app.core.database import get_db
 from app.models.models import (
-    Utilizador, PerfilVendedor, TipoUtilizadorEnum,
+    Utilizador, PerfilVendedor, TipoUtilizadorEnum, Endereco,
     Produto, Pedido, ItemPedido, Servico, PedidoServico,
     PedidoPromocao, Notificacao, StatusPedidoPromocaoEnum, TipoNotificacaoEnum, Categoria
 )
@@ -65,6 +65,56 @@ def ver_minha_loja(
     if not utilizador.perfil_vendedor:
         raise HTTPException(status_code=404, detail="Sem loja registada")
     return utilizador.perfil_vendedor
+
+
+@router.put("/meu-perfil")
+def atualizar_meu_perfil_utilizador(
+    dados: UtilizadorUpdateSchema,
+    utilizador: Utilizador = Depends(get_utilizador_atual),
+    db: Session = Depends(get_db)
+):
+    """Atualiza dados pessoais do vendedor (Utilizador) e sua localização."""
+    perfil = utilizador.perfil_vendedor
+    if not perfil or perfil.tipo_vendedor.value != "vendedor":
+        raise HTTPException(status_code=403, detail="Não é um vendedor válido")
+
+    if dados.nome_completo:
+        utilizador.nome_completo = dados.nome_completo
+    if dados.numero_telefone:
+        utilizador.numero_telefone = dados.numero_telefone
+    if dados.foto_perfil:
+        utilizador.foto_perfil_url = salvar_foto_perfil(dados.foto_perfil, "vendedor", utilizador.id)
+
+    # Update address
+    if any([dados.provincia, dados.municipio, dados.bairro, dados.latitude, dados.longitude]):
+        if not utilizador.endereco:
+            utilizador.endereco = Endereco(
+                utilizador_id=utilizador.id,
+                provincia=dados.provincia or "",
+                municipio=dados.municipio or "",
+                bairro=dados.bairro,
+                latitude=dados.latitude,
+                longitude=dados.longitude,
+                endereco_completo=f"{dados.bairro or ''}, {dados.municipio or ''}, {dados.provincia or ''}".strip(", ")
+            )
+            db.add(utilizador.endereco)
+        else:
+            if dados.provincia is not None:
+                utilizador.endereco.provincia = dados.provincia
+            if dados.municipio is not None:
+                utilizador.endereco.municipio = dados.municipio
+            if dados.bairro is not None:
+                utilizador.endereco.bairro = dados.bairro
+            if dados.latitude is not None:
+                utilizador.endereco.latitude = dados.latitude
+            if dados.longitude is not None:
+                utilizador.endereco.longitude = dados.longitude
+            utilizador.endereco.endereco_completo = f"{utilizador.endereco.bairro or ''}, {utilizador.endereco.municipio or ''}, {utilizador.endereco.provincia or ''}".strip(", ")
+
+    db.commit()
+    db.refresh(utilizador)
+    return {"mensagem": "Perfil do vendedor atualizado com sucesso"}
+
 
 
 @router.get("/meus-produtos", response_model=List[ProdutoResponseSchema])

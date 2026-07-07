@@ -1,7 +1,7 @@
 import os
 import glob
 
-base_dir = r'c:\Users\Uveli Afonso\Documents\GitHub\ByClick2.0\front-end\public\paineis'
+base_dir = r'c:\Users\Uveli Afonso\Documents\GitHub\Kitanda2.0\front-end\public\paineis'
 count = 0
 for filepath in glob.glob(base_dir + '/**/*.html', recursive=True):
     with open(filepath, 'r', encoding='utf-8') as f:

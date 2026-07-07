@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Notificações - Kitanda</title>
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/painel_comprador.css">
+</head>
+<body>
+
+<div class="sidebar-overlay" id="overlay"></div>
+
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <span>Kitanda</span>
+    </div>
+    <div class="profile-section">
+        <img src="https://via.placeholder.com/150" alt="Foto de perfil" class="profile-img" data-user-photo>
+        <div class="profile-info">
+            <h4 data-user-name>Carregando...</h4>
+            <div class="profile-role"><i class="fa-solid fa-user"></i> <span data-user-type>Comprador</span></div>
+        </div>
+    </div>
+    <nav>
+        <div class="nav-label">Menu</div>
+        <a href="painel_comprador.html" class="nav-item"><i class="fa-solid fa-house"></i> Página Inicial</a>
+        <a href="../../explorar/" class="nav-item"><i class="fa-solid fa-compass"></i> Explorar</a>
+        <a href="mensagens.html" class="nav-item"><i class="fa-solid fa-envelope"></i> Mensagens</a>
+        <a href="#" class="nav-item active"><i class="fa-solid fa-bell"></i> Notificações</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-clipboard-list"></i> Meus Pedidos</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-heart"></i> Favoritos</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-user-pen"></i> Meu Perfil</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> Definições</a>
+        <a href="#" class="nav-item nav-logout" id="btnLogout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Terminar Sessão</a>
+    </nav>
+</aside>
+
+<div class="main-content">
+    <header class="topbar">
+        <div class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></div>
+        <div class="topbar-logo">Kitanda</div>
+        <div class="topbar-actions">
+            <div class="icon-btn" onclick="window.location.reload()" style="cursor:pointer;"><i class="fa-regular fa-bell"></i><span class="badge">0</span></div>
+            <div class="topbar-divider"></div>
+            <a href="../../carrinho/" class="icon-btn" style="text-decoration: none;"><i class="fa-solid fa-cart-shopping"></i><span class="badge">0</span></a>
+        </div>
+    </header>
+
+    <main class="page">
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fa-solid fa-bell"></i> As Minhas Notificações</h2>
+                <button class="btn-outline">Marcar todas como lidas</button>
+            </div>
+            <div class="card-body">
+                <div id="notifications-container">
+                    <p style="text-align: center; color: #777;">Ainda não tem notificações.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div id="toast-container"></div>
+<script src="../../js/api.js"></script>
+<script src="../../js/toast.js"></script>
+<script src="../../js/painel_comprador.js"></script>
+<script src="../../js/chat.js"></script>
+</body>
+</html>

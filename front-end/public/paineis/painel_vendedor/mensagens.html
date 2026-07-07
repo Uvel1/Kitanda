@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensagens - Kitanda Vendedor</title>
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/painel_vendedor.css">
+    <style>
+        .chat-container { display: flex; height: 70vh; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eaeaea; }
+        .chat-sidebar { width: 300px; border-right: 1px solid #eaeaea; display: flex; flex-direction: column; }
+        .chat-sidebar-header { padding: 15px; border-bottom: 1px solid #eaeaea; font-weight: bold; background: #f9f9f9; }
+        .chat-list { flex: 1; overflow-y: auto; }
+        .chat-item { padding: 15px; border-bottom: 1px solid #eaeaea; cursor: pointer; transition: background 0.2s; }
+        .chat-item:hover { background: #f4f6f8; }
+        .chat-main { flex: 1; display: flex; flex-direction: column; background: #f4f6f8; }
+        .chat-main-header { padding: 15px; background: white; border-bottom: 1px solid #eaeaea; font-weight: bold; }
+        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .chat-message { max-width: 70%; padding: 12px 16px; border-radius: 18px; font-size: 14px; position: relative; }
+        .chat-message.mine { align-self: flex-end; background: var(--primary-color, #ff6b00); color: white; border-bottom-right-radius: 4px; }
+        .chat-message.theirs { align-self: flex-start; background: white; color: #333; border-bottom-left-radius: 4px; border: 1px solid #eaeaea; }
+        .chat-input-area { padding: 15px; background: white; border-top: 1px solid #eaeaea; display: flex; gap: 10px; }
+        .chat-input-area input { flex: 1; padding: 12px 15px; border: 1px solid #ddd; border-radius: 24px; outline: none; }
+        .chat-input-area button { background: var(--primary-color, #ff6b00); color: white; border: none; padding: 0 20px; border-radius: 24px; cursor: pointer; font-weight: bold; }
+        .no-chat-selected { flex: 1; display: flex; align-items: center; justify-content: center; color: #888; flex-direction: column; }
+        .no-chat-selected i { font-size: 48px; margin-bottom: 10px; color: #ccc; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="overlay"></div>
+
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <span>Kitanda</span>
+    </div>
+    <div class="profile-section">
+        <img src="https://via.placeholder.com/150" alt="Foto de perfil" class="profile-img" data-user-photo>
+        <div class="profile-info">
+            <h4 data-user-name>Carregando...</h4>
+            <div class="profile-role"><i class="fa-solid fa-circle-check"></i> <span data-user-type>Vendedor</span></div>
+        </div>
+    </div>
+    <nav>
+        <div class="nav-label">Menu</div>
+        <a href="painel_vendedor.html" class="nav-item"><i class="fa-solid fa-house"></i> Página Inicial</a>
+        <a href="meus_produtos.html" class="nav-item"><i class="fa-solid fa-box-open"></i> Meus Produtos</a>
+        <a href="meus_servicos.html" class="nav-item"><i class="fa-solid fa-briefcase"></i> Meus Serviços</a>
+        <a href="pedidos.html" class="nav-item"><i class="fa-solid fa-clipboard-list"></i> Pedidos</a>
+        <a href="mensagens.html" class="nav-item active"><i class="fa-solid fa-envelope"></i> Mensagens</a>
+        <a href="pagamentos.html" class="nav-item"><i class="fa-solid fa-wallet"></i> Pagamentos</a>
+        <a href="avaliacoes.html" class="nav-item"><i class="fa-solid fa-star"></i> Avaliações</a>
+        <a href="definicoes.html" class="nav-item"><i class="fa-solid fa-gear"></i> Definições</a>
+        <a href="#" class="nav-item nav-logout" id="btnLogout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Terminar Sessão</a>
+    </nav>
+</aside>
+
+<div class="main-content">
+    <header class="topbar">
+        <div class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></div>
+        <div class="topbar-logo">Kitanda</div>
+        <div class="topbar-actions">
+            <div class="icon-btn" onclick="window.location.href='notificacoes.html'" style="cursor:pointer;"><i class="fa-regular fa-bell"></i><span class="badge" data-notif-count>0</span></div>
+            <div class="topbar-divider"></div>
+            <div class="icon-btn" onclick="window.location.href='mensagens.html'" style="cursor:pointer;"><i class="fa-regular fa-envelope"></i><span class="badge" data-msg-count>0</span></div>
+        </div>
+    </header>
+
+    <main class="page">
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fa-solid fa-envelope"></i> Mensagens</h2>
+            </div>
+            <div class="card-body" style="padding: 0;">
+                <div class="chat-container">
+                    <div class="chat-sidebar">
+                        <div class="chat-sidebar-header">
+                            <div>Conversas</div>
+                            <input type="text" id="search-users" placeholder="Pesquisar utilizadores..." style="width: 100%; padding: 8px; margin-top: 10px; border-radius: 4px; border: 1px solid #ddd; font-size: 13px;">
+                        </div>
+                        <div class="chat-list" id="chat-list">
+                            <div style="padding: 15px; color: #777; font-size: 13px; text-align: center;">Use a pesquisa para encontrar um utilizador e iniciar um chat.</div>
+                        </div>
+                    </div>
+                    <div class="chat-main" id="chat-main" style="display: none;">
+                        <div class="chat-main-header" id="chat-current-user">Nome do Comprador</div>
+                        <div class="chat-messages" id="chat-messages">
+                            <!-- Mensagens aparecem aqui -->
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" id="msg-input" placeholder="Escreva uma mensagem...">
+                            <button id="btn-send"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                    <div class="no-chat-selected" id="no-chat-selected">
+                        <i class="fa-regular fa-comments"></i>
+                        <p>Selecione uma conversa para começar</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="../../js/api.js"></script>
+<script src="../../js/toast.js"></script>
+<script src="../../js/painel_vendedor.js"></script>
+<script src="../../js/chat.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Obter referências DOM
+        const searchInput = document.getElementById('search-users');
+        const chatList = document.getElementById('chat-list');
+        const chatMain = document.getElementById('chat-main');
+        const noChatSelected = document.getElementById('no-chat-selected');
+        const chatCurrentUser = document.getElementById('chat-current-user');
+        const btnSend = document.getElementById('btn-send');
+        const msgInput = document.getElementById('msg-input');
+
+        // Configurar a UI no chatClient
+        setTimeout(() => {
+            if(window.chatClient) {
+                window.chatClient.chatMessagesContainer = document.getElementById('chat-messages');
+                window.chatClient.chatInput = msgInput;
+            }
+        }, 500);
+
+        // Enviar mensagem
+        const handleSend = () => {
+            const text = msgInput.value.trim();
+            if (text && window.chatClient) {
+                window.chatClient.sendMessage(text);
+                msgInput.value = '';
+            }
+        };
+
+        btnSend.onclick = handleSend;
+        msgInput.onkeypress = (e) => {
+            if (e.key === 'Enter') handleSend();
+        };
+
+        // Pesquisa de utilizadores
+        let searchTimeout = null;
+        searchInput.addEventListener('input', (e) => {
+            const val = e.target.value.trim();
+            clearTimeout(searchTimeout);
+            
+            if (val.length < 2) {
+                chatList.innerHTML = '<div style="padding: 15px; color: #777; font-size: 13px; text-align: center;">Digite pelo menos 2 letras.</div>';
+                return;
+            }
+
+            searchTimeout = setTimeout(async () => {
+                chatList.innerHTML = '<div style="padding: 15px; color: #777; font-size: 13px; text-align: center;">A pesquisar...</div>';
+                try {
+                    const token = localStorage.getItem('token');
+                    const res = await fetch(`${API_BASE_URL}/chat/buscar-utilizadores?q=${encodeURIComponent(val)}`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    
+                    if (res.ok) {
+                        const users = await res.json();
+                        chatList.innerHTML = '';
+                        if (users.length === 0) {
+                            chatList.innerHTML = '<div style="padding: 15px; color: #777; font-size: 13px; text-align: center;">Nenhum utilizador encontrado.</div>';
+                            return;
+                        }
+                        
+                        users.forEach(u => {
+                            const div = document.createElement('div');
+                            div.className = 'chat-item';
+                            div.innerHTML = `
+                                <strong>${u.nome}</strong>
+                                <div style="font-size: 12px; color: #888; margin-top: 5px;">${u.tipo === 'vendedor' ? 'Vendedor' : 'Comprador'}</div>
+                            `;
+                            div.onclick = () => {
+                                noChatSelected.style.display = 'none';
+                                chatMain.style.display = 'flex';
+                                chatCurrentUser.innerText = u.nome;
+                                window.chatClient.openChat(u.id, u.nome);
+                            };
+                            chatList.appendChild(div);
+                        });
+                    }
+                } catch(err) {
+                    console.error("Erro na pesquisa", err);
+                }
+            }, 500);
+        });
+    });
+</script>
+</body>
+</html>

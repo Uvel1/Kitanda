@@ -185,7 +185,7 @@ async function submeterPedido() {
 
         if (sucessoGlobal) {
             // Limpar o carrinho e sessão
-            localStorage.removeItem('byclick_carrinho');
+            localStorage.removeItem('kitanda_carrinho');
             window.dispatchEvent(new Event('carrinhoAtualizado'));
             
             if (metodoPagamento === 'multicaixa') {

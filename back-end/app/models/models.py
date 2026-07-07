@@ -149,6 +149,8 @@ class Utilizador(Base):
     avaliacoes_dadas = relationship("Avaliacao", foreign_keys="Avaliacao.avaliador_id", back_populates="avaliador")
     codigos_verificacao = relationship("CodigoVerificacao", back_populates="utilizador", cascade="all, delete-orphan")
     notificacoes = relationship("Notificacao", back_populates="utilizador", cascade="all, delete-orphan")
+    mensagens_enviadas = relationship("MensagemChat", foreign_keys="MensagemChat.remetente_id", back_populates="remetente", cascade="all, delete-orphan")
+    mensagens_recebidas = relationship("MensagemChat", foreign_keys="MensagemChat.destinatario_id", back_populates="destinatario", cascade="all, delete-orphan")
 
 
 # ─────────────────────────── ENDEREÇO ───────────────────────────
@@ -167,6 +169,10 @@ class Endereco(Base):
     bairro = Column(String(150), nullable=True)
     endereco_completo = Column(Text, nullable=True)   
     nif = Column(String(20), nullable=True, unique=True) 
+    
+    # Geolocalização
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
 
     criado_em = Column(DateTime, default=datetime.utcnow)
     atualizado_em = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -556,3 +562,26 @@ class PedidoPromocao(Base):
 
     # Relacionamentos
     vendedor = relationship("PerfilVendedor", back_populates="pedidos_promocao")
+
+
+# ─────────────────────────── MENSAGENS CHAT ───────────────────────────
+
+class MensagemChat(Base):
+    """
+    Mensagens trogadas entre compradores e vendedores.
+    """
+    __tablename__ = "mensagens_chat"
+
+    id = Column(Integer, primary_key=True, index=True)
+    remetente_id = Column(Integer, ForeignKey("utilizadores.id"), nullable=False)
+    destinatario_id = Column(Integer, ForeignKey("utilizadores.id"), nullable=False)
+    
+    conteudo = Column(Text, nullable=False)
+    lida = Column(Boolean, default=False)
+    
+    criado_em = Column(DateTime, default=datetime.utcnow)
+
+    # Relacionamentos
+    remetente = relationship("Utilizador", foreign_keys=[remetente_id], back_populates="mensagens_enviadas")
+    destinatario = relationship("Utilizador", foreign_keys=[destinatario_id], back_populates="mensagens_recebidas")
+

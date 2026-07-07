@@ -31,6 +31,8 @@ class RegistoBaseSchema(BaseModel):
     bairro: Optional[str] = None
     endereco_completo: Optional[str] = None
     nif: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
     foto_perfil: Optional[str] = None
 
     @field_validator("email")
@@ -87,6 +89,8 @@ class RegistoEmpresaSchema(BaseModel):
     data_criacao: Optional[date] = None
     provincia: str
     municipio: str
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
     website: Optional[str] = None
     telefone: str
     email: EmailStr
@@ -175,6 +179,8 @@ class UtilizadorUpdateSchema(BaseModel):
     provincia: Optional[str] = None
     municipio: Optional[str] = None
     bairro: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
 
 
 # ─────────────────────── ENDEREÇO ───────────────────────
@@ -185,6 +191,8 @@ class EnderecoBaseSchema(BaseModel):
     bairro: Optional[str] = None
     endereco_completo: Optional[str] = None
     nif: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
 
 
 class EnderecoCreateSchema(EnderecoBaseSchema):
@@ -244,6 +252,8 @@ class UtilizadorUpdateSchema(BaseModel):
     numero_telefone: Optional[str] = None
     provincia: Optional[str] = None
     municipio: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
     bairro: Optional[str] = None
     foto_perfil: Optional[str] = None
 

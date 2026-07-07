@@ -10,7 +10,7 @@ from typing import Optional
 
 from app.core.database import get_db
 from app.models.models import (
-    Utilizador, PerfilVendedor, TipoUtilizadorEnum,
+    Utilizador, PerfilVendedor, TipoUtilizadorEnum, Endereco,
     Produto, Pedido, ItemPedido, Servico, PedidoServico, Categoria
 )
 from app.schemas.schemas import PerfilVendedorResponseSchema, UtilizadorUpdateSchema
@@ -50,6 +50,32 @@ def atualizar_meu_perfil_utilizador(
         utilizador.numero_telefone = dados.numero_telefone
     if dados.foto_perfil:
         utilizador.foto_perfil_url = salvar_foto_perfil(dados.foto_perfil, "empresa", utilizador.id)
+
+    # Update address
+    if any([dados.provincia, dados.municipio, dados.bairro, dados.latitude, dados.longitude]):
+        if not utilizador.endereco:
+            utilizador.endereco = Endereco(
+                utilizador_id=utilizador.id,
+                provincia=dados.provincia or "",
+                municipio=dados.municipio or "",
+                bairro=dados.bairro,
+                latitude=dados.latitude,
+                longitude=dados.longitude,
+                endereco_completo=f"{dados.bairro or ''}, {dados.municipio or ''}, {dados.provincia or ''}".strip(", ")
+            )
+            db.add(utilizador.endereco)
+        else:
+            if dados.provincia is not None:
+                utilizador.endereco.provincia = dados.provincia
+            if dados.municipio is not None:
+                utilizador.endereco.municipio = dados.municipio
+            if dados.bairro is not None:
+                utilizador.endereco.bairro = dados.bairro
+            if dados.latitude is not None:
+                utilizador.endereco.latitude = dados.latitude
+            if dados.longitude is not None:
+                utilizador.endereco.longitude = dados.longitude
+            utilizador.endereco.endereco_completo = f"{utilizador.endereco.bairro or ''}, {utilizador.endereco.municipio or ''}, {utilizador.endereco.provincia or ''}".strip(", ")
 
     db.commit()
     db.refresh(utilizador)

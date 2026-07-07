@@ -31,6 +31,8 @@ def meu_perfil(
             "bairro": user.endereco.bairro,
             "endereco_completo": user.endereco.endereco_completo,
             "nif": user.endereco.nif,
+            "latitude": user.endereco.latitude,
+            "longitude": user.endereco.longitude,
         }
 
     return {
@@ -66,13 +68,15 @@ def atualizar_meu_perfil(
         user.foto_perfil_url = salvar_foto_perfil(dados.foto_perfil, "comprador", user.id)
 
     # Update address
-    if any([dados.provincia, dados.municipio, dados.bairro]):
+    if any([dados.provincia, dados.municipio, dados.bairro, dados.latitude, dados.longitude]):
         if not user.endereco:
             user.endereco = Endereco(
                 utilizador_id=user.id,
                 provincia=dados.provincia or "",
                 municipio=dados.municipio or "",
                 bairro=dados.bairro,
+                latitude=dados.latitude,
+                longitude=dados.longitude,
                 endereco_completo=f"{dados.bairro or ''}, {dados.municipio or ''}, {dados.provincia or ''}".strip(", ")
             )
             db.add(user.endereco)
@@ -83,6 +87,10 @@ def atualizar_meu_perfil(
                 user.endereco.municipio = dados.municipio
             if dados.bairro is not None:
                 user.endereco.bairro = dados.bairro
+            if dados.latitude is not None:
+                user.endereco.latitude = dados.latitude
+            if dados.longitude is not None:
+                user.endereco.longitude = dados.longitude
             user.endereco.endereco_completo = f"{user.endereco.bairro or ''}, {user.endereco.municipio or ''}, {user.endereco.provincia or ''}".strip(", ")
 
     db.commit()

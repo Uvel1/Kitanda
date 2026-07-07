@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Definições - ByClick</title>
+    <title>Definições - Kitanda</title>
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
-    <meta name="description" content="Painel de controlo empresarial ByClick — gerir produtos, serviços, pedidos e estatísticas da sua empresa.">
+    <meta name="description" content="Painel de controlo empresarial Kitanda — gerir produtos, serviços, pedidos e estatísticas da sua empresa.">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="../../css/painel_empresa.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 </head>
 <body>
 
@@ -17,7 +19,7 @@
 
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <span>ByClick</span>
+        <span>Kitanda</span>
     </div>
     <div class="profile-section">
         <img src="https://via.placeholder.com/150" alt="Empresa" class="profile-img" data-user-photo>
@@ -44,7 +46,7 @@
 <div class="main-content">
     <header class="topbar">
         <div class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></div>
-        <div class="topbar-logo">ByClick</div>
+        <div class="topbar-logo">Kitanda</div>
         <div class="topbar-actions">
             <div class="icon-btn" onclick="window.location.href='notificacoes.html'" style="cursor:pointer;"><i class="fa-regular fa-bell"></i><span class="badge" data-notif-count>0</span></div>
             <div class="topbar-divider"></div>
@@ -110,6 +112,39 @@
                         <input type="text" class="form-control" name="documento_identificacao" id="lojaDoc" disabled>
                     </div>
                     <button type="submit" class="btn-primary">Atualizar Empresa</button>
+                </form>
+            </div>
+
+            <!-- Localização da Loja (Leaflet) -->
+            <div class="panel" style="grid-column: span 2;">
+                <div class="panel-header" style="margin-bottom: 1.5rem;">
+                    <h3 class="panel-title">Localização da Empresa</h3>
+                </div>
+                <form id="formLocalizacaoEmpresa">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                        <div class="form-group">
+                            <label>Província</label>
+                            <input type="text" class="form-control" name="provincia" id="lojaProvincia">
+                        </div>
+                        <div class="form-group">
+                            <label>Município</label>
+                            <input type="text" class="form-control" name="municipio" id="lojaMunicipio">
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>Bairro / Endereço</label>
+                            <input type="text" class="form-control" name="bairro" id="lojaBairro">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label>Mapa (Clique para marcar ou obter localização atual)</label>
+                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                            <button type="button" class="btn-secondary" id="btnPegarLocalizacao"><i class="fa-solid fa-location-crosshairs"></i> Minha Localização Atual</button>
+                        </div>
+                        <div id="mapaLocalizacao" style="height: 300px; border-radius: 8px; border: 1px solid #ddd; z-index: 1;"></div>
+                        <input type="hidden" id="lojaLatitude" name="latitude">
+                        <input type="hidden" id="lojaLongitude" name="longitude">
+                    </div>
+                    <button type="submit" class="btn-primary">Guardar Localização</button>
                 </form>
             </div>
 
@@ -217,7 +252,104 @@
 </div>
 
 <script src="../../js/api.js"></script>
-<script src="../../js/toast.js"></script>
+<script src="../../js/api.js"></script>
 <script src="../../js/painel_empresa.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+    // Configuração do Mapa Leaflet
+    document.addEventListener('DOMContentLoaded', function() {
+        if (!document.getElementById('mapaLocalizacao')) return;
+
+        let latitude = -8.839988; // Default Luanda
+        let longitude = 13.289437;
+        
+        const map = L.map('mapaLocalizacao').setView([latitude, longitude], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        let marker = L.marker([latitude, longitude], {draggable: true}).addTo(map);
+
+        // Ao arrastar o marcador
+        marker.on('dragend', function(e) {
+            const pos = marker.getLatLng();
+            document.getElementById('lojaLatitude').value = pos.lat;
+            document.getElementById('lojaLongitude').value = pos.lng;
+        });
+
+        // Ao clicar no mapa
+        map.on('click', function(e) {
+            marker.setLatLng(e.latlng);
+            document.getElementById('lojaLatitude').value = e.latlng.lat;
+            document.getElementById('lojaLongitude').value = e.latlng.lng;
+        });
+
+        // Obter localização atual via GPS
+        document.getElementById('btnPegarLocalizacao').addEventListener('click', function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    map.setView([lat, lng], 15);
+                    marker.setLatLng([lat, lng]);
+                    document.getElementById('lojaLatitude').value = lat;
+                    document.getElementById('lojaLongitude').value = lng;
+                }, function(error) {
+                    alert("Não foi possível obter a sua localização. Verifique as permissões do navegador.");
+                });
+            } else {
+                alert("Geolocalização não é suportada por este navegador.");
+            }
+        });
+
+        // Preencher form ao carregar
+        const userData = JSON.parse(localStorage.getItem('usuario') || '{}');
+        if (userData.endereco) {
+            document.getElementById('lojaProvincia').value = userData.endereco.provincia || '';
+            document.getElementById('lojaMunicipio').value = userData.endereco.municipio || '';
+            document.getElementById('lojaBairro').value = userData.endereco.bairro || '';
+            if (userData.endereco.latitude && userData.endereco.longitude) {
+                const lat = parseFloat(userData.endereco.latitude);
+                const lng = parseFloat(userData.endereco.longitude);
+                map.setView([lat, lng], 15);
+                marker.setLatLng([lat, lng]);
+                document.getElementById('lojaLatitude').value = lat;
+                document.getElementById('lojaLongitude').value = lng;
+            }
+        }
+
+        // Submeter Localização
+        document.getElementById('formLocalizacaoEmpresa').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const provincia = document.getElementById('lojaProvincia').value;
+            const municipio = document.getElementById('lojaMunicipio').value;
+            const bairro = document.getElementById('lojaBairro').value;
+            const lat = document.getElementById('lojaLatitude').value;
+            const lng = document.getElementById('lojaLongitude').value;
+
+            // Chamar endpoint de atualizar perfil do utilizador / endereço
+            const payload = {};
+            if (provincia) payload.provincia = provincia;
+            if (municipio) payload.municipio = municipio;
+            if (bairro) payload.bairro = bairro;
+            if (lat) payload.latitude = parseFloat(lat);
+            if (lng) payload.longitude = parseFloat(lng);
+
+            try {
+                // Endpoint pode ser diferente para empresa
+                await apiCall('PUT', '/empresa/meu-perfil', payload); // Precisa garantir que a API suporta isto
+                alert("Localização atualizada com sucesso!");
+                
+                // Atualizar localStorage
+                if(!userData.endereco) userData.endereco = {};
+                Object.assign(userData.endereco, payload);
+                localStorage.setItem('usuario', JSON.stringify(userData));
+            } catch (error) {
+                console.error("Erro ao atualizar localização:", error);
+                alert("Erro ao atualizar a localização.");
+            }
+        });
+    });
+</script>
 </body>
 </html>

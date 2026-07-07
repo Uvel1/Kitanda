@@ -20,6 +20,11 @@ class Settings(BaseSettings):
     SMTP_PASSWORD: Optional[str] = None
     EMAIL_FROM: Optional[str] = None
 
+    # SMS Config (Genérico)
+    SMS_PROVIDER_URL: Optional[str] = None
+    SMS_API_KEY: Optional[str] = None
+    SMS_SENDER_ID: Optional[str] = "Kitanda"
+
     class Config:
         env_file = BASE_DIR / ".env"
 

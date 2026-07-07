@@ -1,5 +1,5 @@
 /**
- * Painel do Administrador - ByClick
+ * Painel do Administrador - Kitanda
  */
 
 document.addEventListener('DOMContentLoaded', () => {

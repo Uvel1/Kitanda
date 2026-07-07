@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Vendedor - ByClick</title>
+    <title>Dashboard Vendedor - Kitanda</title>
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
-    <meta name="description" content="Painel de controlo do vendedor ByClick — gerir produtos, pedidos e estatísticas da sua loja.">
+    <meta name="description" content="Painel de controlo do vendedor Kitanda — gerir produtos, pedidos e estatísticas da sua loja.">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -17,7 +17,7 @@
 
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <span>ByClick</span>
+        <span>Kitanda</span>
     </div>
     <div class="profile-section">
         <img src="https://via.placeholder.com/150" alt="Foto de perfil" class="profile-img" data-user-photo>
@@ -32,6 +32,7 @@
         <a href="meus_produtos.html" class="nav-item"><i class="fa-solid fa-box-open"></i> Meus Produtos</a>
         <a href="meus_servicos.html" class="nav-item"><i class="fa-solid fa-briefcase"></i> Meus Serviços</a>
         <a href="pedidos.html" class="nav-item"><i class="fa-solid fa-clipboard-list"></i> Pedidos</a>
+        <a href="mensagens.html" class="nav-item"><i class="fa-solid fa-envelope"></i> Mensagens</a>
         <a href="#" class="nav-item" style="display:none;"><i class="fa-solid fa-chart-line"></i> Estatísticas</a>
         <a href="#" class="nav-item" style="display:none;"><i class="fa-solid fa-handshake"></i> Patrocínios</a>
         <a href="pagamentos.html" class="nav-item"><i class="fa-solid fa-wallet"></i> Pagamentos</a>
@@ -44,11 +45,11 @@
 <div class="main-content">
     <header class="topbar">
         <div class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></div>
-        <div class="topbar-logo">ByClick</div>
+        <div class="topbar-logo">Kitanda</div>
         <div class="topbar-actions">
             <div class="icon-btn" onclick="window.location.href='notificacoes.html'" style="cursor:pointer;"><i class="fa-regular fa-bell"></i><span class="badge" data-notif-count>0</span></div>
             <div class="topbar-divider"></div>
-            <div class="icon-btn"><i class="fa-regular fa-envelope"></i><span class="badge" data-msg-count>0</span></div>
+            <div class="icon-btn" onclick="window.location.href='mensagens.html'" style="cursor:pointer;"><i class="fa-regular fa-envelope"></i><span class="badge" data-msg-count>0</span></div>
             <div class="topbar-divider"></div>
             <div class="icon-btn" data-refresh-btn style="cursor:pointer;" title="Atualizar dados"><i class="fa-solid fa-rotate-right"></i></div>
         </div>
@@ -217,7 +218,7 @@
                         <div class="notif-item">
                             <div class="notif-icon" style="background: var(--primary);"><i class="fa-solid fa-info-circle"></i></div>
                             <div>
-                                <div class="notif-text">Bem-vindo ao seu painel ByClick! 🎉</div>
+                                <div class="notif-text">Bem-vindo ao seu painel Kitanda! 🎉</div>
                                 <span class="notif-time">Agora</span>
                             </div>
                         </div>
@@ -353,5 +354,6 @@
 <script src="../../js/api.js"></script>
 <script src="../../js/toast.js"></script>
 <script src="../../js/painel_vendedor.js"></script>
+<script src="../../js/chat.js"></script>
 </body>
 </html>

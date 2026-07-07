@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Definições - ByClick</title>
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <meta name="description" content="Painel de controlo empresarial ByClick — gerir produtos, serviços, pedidos e estatísticas da sua empresa.">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../../css/painel_empresa.css">
+</head>
+<body>
+
+<div class="sidebar-overlay" id="overlay"></div>
+
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <span>ByClick</span>
+    </div>
+    <div class="profile-section">
+        <img src="https://via.placeholder.com/150" alt="Empresa" class="profile-img" data-user-photo>
+        <div class="profile-info">
+            <h4 data-user-name>Carregando...</h4>
+            <div class="profile-role"><i class="fa-solid fa-building"></i> <span data-user-type>Empresa</span></div>
+        </div>
+    </div>
+    <nav>
+        <div class="nav-label">Menu</div>
+        <a href="painel_empresa.html" class="nav-item"><i class="fa-solid fa-house"></i> Página Inicial</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-box-open"></i> Meus Produtos</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-briefcase"></i> Meus Serviços</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-clipboard-list"></i> Pedidos</a>
+        <a href="#" class="nav-item" style="display:none;"><i class="fa-solid fa-chart-line"></i> Estatísticas</a>
+        <a href="#" class="nav-item" style="display:none;"><i class="fa-solid fa-handshake"></i> Parcerias</a>
+        <a href="financeiro.html" class="nav-item"><i class="fa-solid fa-wallet"></i> Financeiro</a>
+        <a href="avaliacoes.html" class="nav-item"><i class="fa-solid fa-star"></i> Avaliações</a>
+        <a href="definicoes.html" class="nav-item active"><i class="fa-solid fa-gear"></i> Definições</a>
+        <a href="#" class="nav-item nav-logout" id="btnLogout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Terminar Sessão</a>
+    </nav>
+</aside>
+
+<div class="main-content">
+    <header class="topbar">
+        <div class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></div>
+        <div class="topbar-logo">ByClick</div>
+        <div class="topbar-actions">
+            <div class="icon-btn" onclick="window.location.href='notificacoes.html'" style="cursor:pointer;"><i class="fa-regular fa-bell"></i><span class="badge" data-notif-count>0</span></div>
+            <div class="topbar-divider"></div>
+            <div class="icon-btn"><i class="fa-regular fa-envelope"></i><span class="badge" data-msg-count>0</span></div>
+            <div class="topbar-divider"></div>
+            <div class="icon-btn" data-refresh-btn style="cursor: pointer;" title="Atualizar dados"><i class="fa-solid fa-rotate-right"></i></div>
+        </div>
+    </header>
+
+        <div class="header-section">
+            <div class="greeting">
+                <h1>Definições da Conta Empresarial</h1>
+                <p>Faça a gestão dos dados da sua empresa, perfil do representante e segurança.</p>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <!-- Definições de Utilizador (Representante) -->
+            <div class="panel">
+                <div class="panel-header" style="margin-bottom: 1.5rem;">
+                    <h3 class="panel-title">Informações do Representante</h3>
+                </div>
+                <form id="formUserEmpresa">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                        <img src="https://via.placeholder.com/80" id="previewPerfilDefinicoes" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+                        <div>
+                            <label for="imgPerfilDefinicoes" class="btn-secondary" style="cursor: pointer; padding: 0.5rem 1rem; border-radius: 4px;"><i class="fa-solid fa-upload"></i> Mudar Foto</label>
+                            <input type="file" id="imgPerfilDefinicoes" accept="image/*" style="display: none;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Nome Completo (Representante)</label>
+                        <input type="text" class="form-control" name="nome_completo" id="userNome">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-control" name="email" id="userEmail" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>Telefone</label>
+                        <input type="text" class="form-control" name="telefone" id="userTelefone">
+                    </div>
+                    <button type="submit" class="btn-primary">Atualizar Perfil</button>
+                </form>
+            </div>
+
+            <!-- Definições da Loja -->
+            <div class="panel">
+                <div class="panel-header" style="margin-bottom: 1.5rem;">
+                    <h3 class="panel-title">Definições da Empresa</h3>
+                </div>
+                <form id="formLojaEmpresa">
+                    <div class="form-group">
+                        <label>Nome da Empresa</label>
+                        <input type="text" class="form-control" name="nome_loja" id="lojaNome">
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição Institucional</label>
+                        <textarea class="form-control" name="descricao" id="lojaDescricao" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>NIF</label>
+                        <input type="text" class="form-control" name="documento_identificacao" id="lojaDoc" disabled>
+                    </div>
+                    <button type="submit" class="btn-primary">Atualizar Empresa</button>
+                </form>
+            </div>
+
+            <!-- Segurança (Mudar Senha) -->
+            <div class="panel" style="grid-column: span 2;">
+                <div class="panel-header" style="margin-bottom: 1.5rem;">
+                    <h3 class="panel-title">Segurança</h3>
+                </div>
+                <form id="formSegurancaEmpresa">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div class="form-group">
+                            <label>Palavra-passe Atual</label>
+                            <input type="password" class="form-control" id="senhaAtual" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nova Palavra-passe</label>
+                            <input type="password" class="form-control" id="novaSenha" required minlength="8">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary" style="background-color: var(--red);">Atualizar Palavra-passe</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal Overlay e Modal Adicionar Produto -->
+<div class="modal-overlay" id="modalProduto">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">Adicionar Novo Produto</h3>
+            <button class="btn-close-modal" onclick="fecharModal('modalProduto')"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+            <form id="formAddProduto">
+                <div class="form-group">
+                    <label>Nome do Produto</label>
+                    <input type="text" class="form-control" name="nome" required>
+                </div>
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <textarea class="form-control" name="descricao" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Preço (Kz)</label>
+                    <input type="number" step="0.01" class="form-control" name="preco" required>
+                </div>
+                <div class="form-group">
+                    <label>Stock Disponível</label>
+                    <input type="number" class="form-control" name="estoque" required>
+                </div>
+                <div class="form-group">
+                    <label>Categoria ID</label>
+                    <input type="number" class="form-control" name="categoria_id" required>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="fecharModal('modalProduto')">Cancelar</button>
+            <button class="btn-primary" onclick="submeterNovoProduto()">Salvar Produto</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Adicionar Serviço -->
+<div class="modal-overlay" id="modalServico">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">Adicionar Novo Serviço</h3>
+            <button class="btn-close-modal" onclick="fecharModal('modalServico')"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+            <form id="formAddServico">
+                <div class="form-group">
+                    <label>Nome do Serviço</label>
+                    <input type="text" class="form-control" name="nome" required>
+                </div>
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <textarea class="form-control" name="descricao" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Preço Base (Kz)</label>
+                    <input type="number" step="0.01" class="form-control" name="preco_base" required>
+                </div>
+                <div class="form-group">
+                    <label>Duração Estimada (ex: 2h)</label>
+                    <input type="text" class="form-control" name="duracao_estimada">
+                </div>
+                <div class="form-group">
+                    <label>Disponibilidade (ex: online, presencial)</label>
+                    <input type="text" class="form-control" name="disponibilidade">
+                </div>
+                <div class="form-group">
+                    <label>Categoria ID</label>
+                    <input type="number" class="form-control" name="categoria_id" required>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="fecharModal('modalServico')">Cancelar</button>
+            <button class="btn-primary" onclick="submeterNovoServico()">Salvar Serviço</button>
+        </div>
+    </div>
+</div>
+
+<script src="../../js/api.js"></script>
+<script src="../../js/toast.js"></script>
+<script src="../../js/painel_empresa.js"></script>
+</body>
+</html>

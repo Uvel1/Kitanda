@@ -433,7 +433,35 @@ function logout() {
 }
 
 function estaAutenticado() {
-  return !!localStorage.getItem('access_token');
+  const token = localStorage.getItem('access_token');
+  if (!token) return false;
+
+  try {
+    // Decodificar o payload do JWT para verificar se expirou
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const agora = Math.floor(Date.now() / 1000);
+
+    if (payload.exp && payload.exp < agora) {
+      // Token expirado — limpar sessão automaticamente
+      console.warn('Token expirado. A limpar sessão...');
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('token_type');
+      localStorage.removeItem('login_timestamp');
+      localStorage.removeItem('usuario');
+      return false;
+    }
+
+    return true;
+  } catch (e) {
+    // Token inválido/corrompido — limpar
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('token_type');
+    localStorage.removeItem('login_timestamp');
+    localStorage.removeItem('usuario');
+    return false;
+  }
 }
 
 function obterToken() {

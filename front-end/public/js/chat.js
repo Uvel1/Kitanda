@@ -5,14 +5,102 @@
 class ChatClient {
     constructor() {
         this.socket = null;
-        this.token = localStorage.getItem('token');
-        this.chatModal = null;
+        // CORREÇÃO 1: O token na API é guardado como 'access_token', não 'token'
+        this.token = localStorage.getItem('access_token');
         this.chatMessagesContainer = null;
         this.chatInput = null;
         this.currentChatUserId = null;
         
+        // UI Elements
+        this.chatListContainer = document.getElementById('chat-list');
+        this.chatMainArea = document.getElementById('chat-main');
+        this.noChatSelectedArea = document.getElementById('no-chat-selected');
+        this.chatCurrentUserLabel = document.getElementById('chat-current-user');
+        
+        // Input Elements
+        this.msgInput = document.getElementById('msg-input');
+        this.btnSend = document.getElementById('btn-send');
+        this.searchInput = document.getElementById('search-users');
+        
         if (this.token) {
             this.initWebSocket();
+            this.loadConversas(); // Carregar histórico na sidebar
+            this.setupEventListeners();
+        }
+    }
+
+    setupEventListeners() {
+        if (this.btnSend) {
+            this.btnSend.addEventListener('click', () => this.handleSend());
+        }
+        
+        if (this.msgInput) {
+            this.msgInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') this.handleSend();
+            });
+        }
+        
+        if (this.searchInput) {
+            let searchTimeout = null;
+            this.searchInput.addEventListener('input', (e) => {
+                const val = e.target.value.trim();
+                clearTimeout(searchTimeout);
+                
+                if (val.length === 0) {
+                    this.loadConversas(); // Volta à lista normal
+                    return;
+                }
+                
+                if (val.length < 2) return;
+
+                searchTimeout = setTimeout(async () => {
+                    if (this.chatListContainer) {
+                        this.chatListContainer.innerHTML = '<div style="padding: 15px; color: #777; font-size: 13px; text-align: center;">A pesquisar...</div>';
+                    }
+                    try {
+                        const res = await fetch(`${API_BASE_URL}/chat/buscar-utilizadores?q=${encodeURIComponent(val)}`, {
+                            headers: { 'Authorization': `Bearer ${this.token}` }
+                        });
+                        
+                        if (res.ok) {
+                            const users = await res.json();
+                            if (this.chatListContainer) {
+                                this.chatListContainer.innerHTML = '';
+                                if (users.length === 0) {
+                                    this.chatListContainer.innerHTML = '<div style="padding: 15px; color: #777; font-size: 13px; text-align: center;">Nenhum utilizador encontrado.</div>';
+                                    return;
+                                }
+                                
+                                users.forEach(u => {
+                                    const div = document.createElement('div');
+                                    div.className = 'chat-item';
+                                    div.innerHTML = `
+                                        <strong>${this.escapeHTML(u.nome)}</strong>
+                                        <div style="font-size: 12px; color: #888; margin-top: 5px;">${u.tipo === 'vendedor' ? 'Vendedor' : 'Comprador'}</div>
+                                    `;
+                                    div.onclick = () => {
+                                        this.openChat(u.id, u.nome);
+                                        this.searchInput.value = ''; // Limpa pesquisa
+                                        this.loadConversas(); // Volta à lista normal
+                                    };
+                                    this.chatListContainer.appendChild(div);
+                                });
+                            }
+                        }
+                    } catch(err) {
+                        console.error("Erro na pesquisa", err);
+                    }
+                }, 500);
+            });
+        }
+    }
+
+    handleSend() {
+        if (!this.msgInput) return;
+        const text = this.msgInput.value.trim();
+        if (text) {
+            this.sendMessage(text);
+            this.msgInput.value = '';
         }
     }
 
@@ -35,19 +123,91 @@ class ChatClient {
         };
 
         this.socket.onclose = () => {
-            console.log('Chat WebSocket desconectado. Tentando reconectar...');
+            console.log('Chat WebSocket desconectado. Tentando reconectar em 5s...');
             setTimeout(() => this.initWebSocket(), 5000);
         };
     }
 
+    async loadConversas() {
+        if (!this.chatListContainer) return;
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/chat/conversas`, {
+                headers: { 'Authorization': `Bearer ${this.token}` }
+            });
+
+            if (response.ok) {
+                const conversas = await response.json();
+                this.renderChatList(conversas);
+            }
+        } catch (error) {
+            console.error("Erro ao carregar lista de conversas", error);
+        }
+    }
+
+    renderChatList(conversas) {
+        if (!this.chatListContainer) return;
+        
+        if (conversas.length === 0) {
+            this.chatListContainer.innerHTML = '<div style="padding: 15px; color: #777; font-size: 13px; text-align: center;">Nenhuma conversa iniciada. Use a pesquisa.</div>';
+            return;
+        }
+
+        this.chatListContainer.innerHTML = '';
+        conversas.forEach(c => {
+            const div = document.createElement('div');
+            div.className = `chat-item ${this.currentChatUserId === c.utilizador_id ? 'active' : ''}`;
+            div.style.position = 'relative';
+            
+            // Format time
+            const timeStr = c.ultima_data ? new Date(c.ultima_data).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '';
+            
+            // Unread badge
+            const unreadBadge = c.nao_lidas > 0 ? `<div style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: var(--primary-color, #ff6b00); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold;">${c.nao_lidas}</div>` : '';
+
+            // Truncate message
+            let preview = c.ultima_mensagem || '';
+            if (preview.length > 30) preview = preview.substring(0, 30) + '...';
+            if (c.enviada_por_mim) preview = 'Tu: ' + preview;
+
+            div.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                    <strong>${this.escapeHTML(c.nome)}</strong>
+                    <span style="font-size: 11px; color: #999;">${timeStr}</span>
+                </div>
+                <div style="font-size: 12px; color: #666; margin-top: 5px; padding-right: 25px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    ${this.escapeHTML(preview)}
+                </div>
+                ${unreadBadge}
+            `;
+            
+            div.onclick = () => {
+                // Remove active class from all
+                document.querySelectorAll('.chat-item').forEach(el => el.classList.remove('active'));
+                div.classList.add('active');
+                
+                this.openChat(c.utilizador_id, c.nome);
+                
+                // If it had unread, reload list to clear badge
+                if (c.nao_lidas > 0) {
+                    setTimeout(() => this.loadConversas(), 1000);
+                }
+            };
+            this.chatListContainer.appendChild(div);
+        });
+    }
+
     handleIncomingMessage(message) {
-        // Se o chat com este utilizador estiver aberto, mostra a mensagem
+        // Se a mensagem for da conversa atual (enviada ou recebida), renderiza na janela
         if (this.currentChatUserId === message.remetente_id || this.currentChatUserId === message.destinatario_id) {
             this.renderMessage(message);
         } else {
-            // Caso contrário, mostra uma notificação toast
+            // Se for de outra pessoa, notifica
             this.showToastNotification(message);
         }
+        
+        // Em qualquer caso, atualiza a sidebar para refletir a última mensagem e badges
+        this.loadConversas();
     }
 
     renderMessage(message) {
@@ -68,30 +228,54 @@ class ChatClient {
 
     async openChat(userId, userName) {
         this.currentChatUserId = userId;
-        this.createChatUI(userName);
         
-        // Load history
+        // Atualiza a UI Inline
+        if (this.noChatSelectedArea) this.noChatSelectedArea.style.display = 'none';
+        if (this.chatMainArea) this.chatMainArea.style.display = 'flex';
+        if (this.chatCurrentUserLabel) this.chatCurrentUserLabel.innerText = userName;
+        
+        // Tenta encontrar o container de mensagens e input se não estiverem setados
+        if (!this.chatMessagesContainer) {
+            this.chatMessagesContainer = document.getElementById('chat-messages');
+        }
+        if (!this.chatInput) {
+            this.chatInput = document.getElementById('msg-input');
+        }
+
+        if (this.chatMessagesContainer) {
+            this.chatMessagesContainer.innerHTML = '<div style="text-align: center; color: #888; font-size: 13px; margin-top: 20px;">A carregar histórico...</div>';
+        }
+
+        // Carrega histórico
         try {
             const response = await fetch(`${API_BASE_URL}/chat/historico/${userId}`, {
-                headers: {
-                    'Authorization': `Bearer ${this.token}`
-                }
+                headers: { 'Authorization': `Bearer ${this.token}` }
             });
             if (response.ok) {
                 const history = await response.json();
-                this.chatMessagesContainer.innerHTML = '';
-                history.forEach(msg => this.renderMessage(msg));
+                if (this.chatMessagesContainer) {
+                    this.chatMessagesContainer.innerHTML = '';
+                    if (history.length === 0) {
+                        this.chatMessagesContainer.innerHTML = '<div style="text-align: center; color: #888; font-size: 13px; margin-top: 20px;">Esta é uma nova conversa. Diga olá!</div>';
+                    } else {
+                        history.forEach(msg => this.renderMessage(msg));
+                    }
+                }
             }
         } catch (error) {
             console.error("Erro ao carregar histórico do chat", error);
+            if (this.chatMessagesContainer) {
+                this.chatMessagesContainer.innerHTML = '<div style="text-align: center; color: red; font-size: 13px; margin-top: 20px;">Erro ao carregar mensagens.</div>';
+            }
         }
     }
 
     sendMessage(text) {
         if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
-            alert('Chat desconectado. Tente novamente mais tarde.');
+            alert('Chat desconectado. Aguarde a reconexão.');
             return;
         }
+        if (!this.currentChatUserId) return;
 
         const payload = {
             destinatario_id: this.currentChatUserId,
@@ -99,73 +283,6 @@ class ChatClient {
         };
 
         this.socket.send(JSON.stringify(payload));
-    }
-
-    createChatUI(userName) {
-        if (document.getElementById('kitanda-chat-modal')) {
-            document.getElementById('kitanda-chat-modal').style.display = 'flex';
-            document.getElementById('chat-header-name').innerText = userName;
-            return;
-        }
-
-        const modalHtml = `
-            <div id="kitanda-chat-modal" class="chat-modal">
-                <div class="chat-header">
-                    <h3 id="chat-header-name">${userName}</h3>
-                    <button class="close-chat" onclick="document.getElementById('kitanda-chat-modal').style.display='none'">&times;</button>
-                </div>
-                <div class="chat-messages" id="chat-messages-container"></div>
-                <div class="chat-input-area">
-                    <input type="text" id="chat-input" placeholder="Escreva uma mensagem...">
-                    <button id="chat-send-btn">Enviar</button>
-                </div>
-            </div>
-        `;
-
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
-
-        this.chatModal = document.getElementById('kitanda-chat-modal');
-        this.chatMessagesContainer = document.getElementById('chat-messages-container');
-        this.chatInput = document.getElementById('chat-input');
-        
-        document.getElementById('chat-send-btn').addEventListener('click', () => {
-            const text = this.chatInput.value.trim();
-            if (text) {
-                this.sendMessage(text);
-                this.chatInput.value = '';
-            }
-        });
-
-        this.chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const text = this.chatInput.value.trim();
-                if (text) {
-                    this.sendMessage(text);
-                    this.chatInput.value = '';
-                }
-            }
-        });
-
-        // Add some basic styles dynamically
-        if (!document.getElementById('chat-styles')) {
-            const style = document.createElement('style');
-            style.id = 'chat-styles';
-            style.textContent = `
-                .chat-modal { position: fixed; bottom: 20px; right: 20px; width: 350px; height: 450px; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; flex-direction: column; z-index: 9999; font-family: var(--font-main, sans-serif); border: 1px solid #eaeaea; }
-                .chat-header { background: var(--primary-color, #1a73e8); color: white; padding: 15px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center; }
-                .chat-header h3 { margin: 0; font-size: 16px; }
-                .close-chat { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
-                .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #f9f9f9; }
-                .chat-message { max-width: 80%; padding: 10px 14px; border-radius: 18px; position: relative; font-size: 14px; }
-                .chat-message.mine { align-self: flex-end; background: var(--primary-color, #1a73e8); color: white; border-bottom-right-radius: 4px; }
-                .chat-message.theirs { align-self: flex-start; background: #e0e0e0; color: #333; border-bottom-left-radius: 4px; }
-                .msg-time { font-size: 10px; margin-top: 4px; opacity: 0.7; text-align: right; }
-                .chat-input-area { padding: 15px; border-top: 1px solid #eaeaea; display: flex; gap: 10px; background: white; border-radius: 0 0 12px 12px; }
-                .chat-input-area input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
-                .chat-input-area button { background: var(--primary-color, #1a73e8); color: white; border: none; padding: 10px 15px; border-radius: 20px; cursor: pointer; }
-            `;
-            document.head.appendChild(style);
-        }
     }
 
     getCurrentUserId() {
@@ -191,45 +308,56 @@ class ChatClient {
     }
 
     showToastNotification(message) {
-        // Criar um elemento customizado para a notificação
-        const toastId = 'toast-' + Date.now();
+        const toastId = 'toast-chat-' + Date.now();
         const notificationHtml = `
-            <div id="${toastId}" style="position: fixed; top: 20px; right: 20px; background: white; border-left: 4px solid var(--primary-color, #1a73e8); box-shadow: 0 4px 12px rgba(0,0,0,0.15); padding: 15px; border-radius: 8px; z-index: 10000; display: flex; flex-direction: column; gap: 8px; min-width: 250px; font-family: sans-serif; animation: slideIn 0.3s ease-out;">
+            <div id="${toastId}" style="position: fixed; top: 20px; right: 20px; background: white; border-left: 4px solid var(--primary-color, #ff6b00); box-shadow: 0 4px 12px rgba(0,0,0,0.15); padding: 15px; border-radius: 8px; z-index: 10000; display: flex; flex-direction: column; gap: 8px; min-width: 250px; font-family: sans-serif; animation: slideIn 0.3s ease-out;">
                 <div style="font-weight: bold; color: #333;">Nova Mensagem</div>
-                <div style="color: #666; font-size: 14px;">Você recebeu uma mensagem.</div>
+                <div style="color: #666; font-size: 14px;">Você recebeu uma nova mensagem.</div>
                 <div style="display: flex; gap: 10px; margin-top: 5px;">
-                    <button id="btn-reply-${toastId}" style="background: var(--primary-color, #1a73e8); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">Responder no Chat</button>
+                    <button id="btn-reply-${toastId}" style="background: var(--primary-color, #ff6b00); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">Ver</button>
                     <button id="btn-close-${toastId}" style="background: transparent; color: #999; border: 1px solid #ccc; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">Fechar</button>
                 </div>
             </div>
         `;
         document.body.insertAdjacentHTML('beforeend', notificationHtml);
 
-        // Remover toast após 5 segundos se não for clicado
         const autoClose = setTimeout(() => {
             const el = document.getElementById(toastId);
             if(el) el.remove();
         }, 5000);
 
-        // Lidar com clique em Responder
         document.getElementById(`btn-reply-${toastId}`).addEventListener('click', () => {
             clearTimeout(autoClose);
             document.getElementById(toastId).remove();
             
-            // Abre o popup do chat com o remetente da mensagem
-            // Idealmente faríamos um fetch do nome do remetente. Aqui usamos genérico "Utilizador".
-            this.openChat(message.remetente_id, "Utilizador " + message.remetente_id);
+            // Abre o chat
+            // Se estivermos na página de mensagens, o UI já está lá
+            if (document.getElementById('chat-main')) {
+                this.openChat(message.remetente_id, "Novo Utilizador");
+                this.loadConversas(); // Recarrega para ter o nome real
+            } else {
+                // Se estiver noutra página, redireciona
+                const isVendedor = window.location.pathname.includes('/painel_vendedor/');
+                window.location.href = isVendedor ? 'mensagens.html' : '../painel_comprador/mensagens.html';
+            }
         });
 
-        // Lidar com clique em Fechar
         document.getElementById(`btn-close-${toastId}`).addEventListener('click', () => {
             clearTimeout(autoClose);
             document.getElementById(toastId).remove();
         });
+        
+        // Adiciona um estilo inline para a animação se não existir
+        if (!document.getElementById('chat-toast-style')) {
+            const style = document.createElement('style');
+            style.id = 'chat-toast-style';
+            style.innerHTML = `@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }`;
+            document.head.appendChild(style);
+        }
     }
 }
 
-// Initialize on page load
+// Inicializar
 window.addEventListener('DOMContentLoaded', () => {
     window.chatClient = new ChatClient();
 });

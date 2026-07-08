@@ -464,37 +464,27 @@ def recuperar_senha(dados: RecuperarSenhaSchema, db: Session = Depends(get_db)):
     utilizador = db.query(Utilizador).filter(or_(*filtros)).first()
 
     if not utilizador:
-        # Por questoes de segurança, retornamos sucesso sempre.
-        return {"mensagem": "Se a conta existir, foi enviado um código de recuperação."}
+        raise HTTPException(status_code=404, detail="Conta não encontrada com este email/telefone.")
 
-    codigo_otp = gerar_codigo_otp()
+    # Gera nova senha temporária de 8 caracteres
+    nova_senha = "".join(random.choices(string.ascii_letters + string.digits, k=8))
     
-    # Invalida codigos de reset anteriores
-    db.query(CodigoVerificacao).filter(
-        CodigoVerificacao.utilizador_id == utilizador.id,
-        CodigoVerificacao.tipo == "reset_senha"
-    ).update({"usado": True})
-
-    db.add(CodigoVerificacao(
-        utilizador_id=utilizador.id,
-        codigo=codigo_otp,
-        tipo="reset_senha",
-        expira_em=datetime.utcnow() + timedelta(minutes=30),
-    ))
+    # Atualiza a senha do utilizador
+    utilizador.senha_hash = hash_password(nova_senha)
     db.commit()
 
     # Enviar email se o identificador for um email
     if "@" in utilizador.email:
-        sucesso_email = enviar_otp_recuperacao(utilizador.email, codigo_otp)
+        sucesso_email = enviar_otp_recuperacao(utilizador.email, nova_senha)
         if sucesso_email:
-            print(f"\n[EMAIL ENVIADO] Código OTP {codigo_otp} para {utilizador.email}\n")
+            print(f"\n[EMAIL ENVIADO] Nova senha {nova_senha} para {utilizador.email}\n")
         else:
-            print(f"\n[FALLBACK TERMINAL] Código de recuperação (OTP) gerado: {codigo_otp}")
+            print(f"\n[FALLBACK TERMINAL] Nova senha gerada: {nova_senha}")
             print("Configure o servidor SMTP no ficheiro .env para enviar e-mails reais.\n")
     else:
-        print(f"\n[TERMINAL] SMS Simulator - OTP: {codigo_otp}\n")
+        print(f"\n[TERMINAL] SMS Simulator - Nova Senha: {nova_senha}\n")
 
-    return {"mensagem": "Se a conta existir, foi enviado um código de recuperação."}
+    return {"mensagem": "Uma nova palavra-passe temporária foi enviada para o seu contacto."}
 
 
 @router.post("/redefinir-senha")

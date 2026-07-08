@@ -745,9 +745,7 @@ async function submeterCadastro(event, botao, config) {
 
     if (resultado.success) {
       mostrarToast(config.sucesso, 'success');
-      setTimeout(() => {
-        window.location.href = '../../../login/';
-      }, 2000);
+      // O redirecionamento já é feito na api.js
       return;
     }
 
@@ -814,10 +812,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (resultado.success) {
           mostrarToast('Cadastro realizado com sucesso!', 'success');
           mostrarLoading(false);
-          // Redirecionar para login após 2 segundos
-          setTimeout(() => {
-            window.location.href = '../../../login/';
-          }, 2000);
+          // O redirecionamento já é feito na api.js (em registarComprador)
         } else {
           mostrarLoading(false);
           const mensagem = resultado.error || 'Erro ao registar';

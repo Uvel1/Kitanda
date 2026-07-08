@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect, Query
 from sqlalchemy.orm import Session
-from sqlalchemy import or_, and_
+from sqlalchemy import or_, and_, func, case, desc
 from typing import List, Dict
 import json
 from datetime import datetime
@@ -35,6 +35,88 @@ class ConnectionManager:
 manager = ConnectionManager()
 
 # ─────────────────────────── ROTAS REST ───────────────────────────
+
+@router.get("/conversas")
+def listar_conversas(
+    db: Session = Depends(get_db),
+    atual: Utilizador = Depends(get_utilizador_atual)
+):
+    """
+    Lista todas as conversas do utilizador atual,
+    ordenadas pela última mensagem (mais recente primeiro).
+    """
+    # Subquery: para cada conversa, obter o ID da última mensagem
+    outro_id = case(
+        (MensagemChat.remetente_id == atual.id, MensagemChat.destinatario_id),
+        else_=MensagemChat.remetente_id
+    ).label("outro_id")
+
+    subq = (
+        db.query(
+            outro_id,
+            func.max(MensagemChat.id).label("ultima_msg_id"),
+            func.max(MensagemChat.criado_em).label("ultima_data"),
+            func.sum(
+                case(
+                    (and_(MensagemChat.destinatario_id == atual.id, MensagemChat.lida == False), 1),
+                    else_=0
+                )
+            ).label("nao_lidas")
+        )
+        .filter(or_(
+            MensagemChat.remetente_id == atual.id,
+            MensagemChat.destinatario_id == atual.id
+        ))
+        .group_by(outro_id)
+        .subquery()
+    )
+
+    # Join com utilizador e mensagem
+    resultados = (
+        db.query(
+            Utilizador.id,
+            Utilizador.nome_completo,
+            Utilizador.tipo_utilizador,
+            Utilizador.foto_perfil_url,
+            MensagemChat.conteudo,
+            MensagemChat.criado_em,
+            MensagemChat.remetente_id,
+            subq.c.nao_lidas
+        )
+        .join(Utilizador, Utilizador.id == subq.c.outro_id)
+        .join(MensagemChat, MensagemChat.id == subq.c.ultima_msg_id)
+        .order_by(desc(subq.c.ultima_data))
+        .all()
+    )
+
+    conversas = []
+    for r in resultados:
+        conversas.append({
+            "utilizador_id": r[0],
+            "nome": r[1],
+            "tipo": r[2].value if r[2] else "comprador",
+            "foto": r[3],
+            "ultima_mensagem": r[4],
+            "ultima_data": r[5].isoformat() if r[5] else None,
+            "enviada_por_mim": r[6] == atual.id,
+            "nao_lidas": int(r[7] or 0)
+        })
+
+    return conversas
+
+
+@router.get("/conversas/nao-lidas")
+def contar_nao_lidas(
+    db: Session = Depends(get_db),
+    atual: Utilizador = Depends(get_utilizador_atual)
+):
+    """Retorna o total de mensagens não lidas do utilizador."""
+    total = db.query(func.count(MensagemChat.id)).filter(
+        MensagemChat.destinatario_id == atual.id,
+        MensagemChat.lida == False
+    ).scalar()
+    return {"total": total or 0}
+
 
 @router.get("/historico/{outro_utilizador_id}")
 def obter_historico(

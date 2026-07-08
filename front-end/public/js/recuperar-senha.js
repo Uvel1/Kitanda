@@ -55,14 +55,11 @@ document.addEventListener('DOMContentLoaded', function() {
       const data = await response.json();
 
       if (response.ok) {
-        mostrarToast(data.mensagem || 'Código enviado!', 'success');
+        mostrarToast(data.mensagem || 'Nova palavra-passe enviada!', 'success');
         
-        // Guardar identificador para a proxima pagina
-        localStorage.setItem('reset_identificador', identificador);
-
-        // Redirecionar para inserir o código
+        // Redirecionar para login
         setTimeout(() => {
-          window.location.href = '../redefinir-senha/';
+          window.location.href = '../login/';
         }, 1500);
       } else {
         const msgErro = data.detail || 'Erro ao processar o pedido';

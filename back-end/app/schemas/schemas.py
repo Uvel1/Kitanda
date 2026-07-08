@@ -173,14 +173,7 @@ class VerificarCodigoSchema(BaseModel):
     tipo: str  # "email", "telefone"
 
 
-class UtilizadorUpdateSchema(BaseModel):
-    nome_completo: Optional[str] = None
-    numero_telefone: Optional[str] = None
-    provincia: Optional[str] = None
-    municipio: Optional[str] = None
-    bairro: Optional[str] = None
-    latitude: Optional[float] = None
-    longitude: Optional[float] = None
+
 
 
 # ─────────────────────── ENDEREÇO ───────────────────────

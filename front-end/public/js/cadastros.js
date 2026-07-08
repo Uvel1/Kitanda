@@ -538,6 +538,8 @@ function coletarDadosVendedor() {
     municipio: valorPorId('vendMunicipio') || null,
     bairro: valorPorId('vendBairro') || null,
     endereco_completo: valorPorId('vendRua') || null,
+    latitude: valorPorId('vendLatitude') ? parseFloat(valorPorId('vendLatitude')) : null,
+    longitude: valorPorId('vendLongitude') ? parseFloat(valorPorId('vendLongitude')) : null,
     numero_bi: valorPorId('vendBi'),
     nif: valorPorId('vendNif') || null,
     data_emissao: valorPorId('vendDataEmissao'),
@@ -565,6 +567,8 @@ function coletarDadosEmpresa() {
     data_criacao: valorPorId('companyCreationDate') || null,
     provincia: valorPorId('companyProvince'),
     municipio: valorPorId('companyMunicipality'),
+    latitude: valorPorId('empLatitude') ? parseFloat(valorPorId('empLatitude')) : null,
+    longitude: valorPorId('empLongitude') ? parseFloat(valorPorId('empLongitude')) : null,
     website: valorPorId('companyWebsite') || null,
     telefone: valorPorId('companyPhone'),
     email: valorPorId('companyEmail'),
@@ -848,7 +852,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function carregarProvincias() {
   try {
-    const response = await fetch('http://localhost:8000/api/v1/localidades/provincias');
+    const response = await fetch(`${API_BASE_URL}/localidades/provincias`);
     const provincias = await response.json();
     return provincias;
   } catch (error) {
@@ -859,7 +863,7 @@ async function carregarProvincias() {
 
 async function carregarMunicipios(provinciaId) {
   try {
-    const response = await fetch(`http://localhost:8000/api/v1/localidades/provincias/${provinciaId}/municipios`);
+    const response = await fetch(`${API_BASE_URL}/localidades/provincias/${provinciaId}/municipios`);
     const municipios = await response.json();
     return municipios;
   } catch (error) {

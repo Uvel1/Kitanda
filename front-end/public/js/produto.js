@@ -122,6 +122,33 @@ function renderizarProduto(p) {
     btnVerLoja.href = `../loja/?id=${p.vendedor_id}`;
   }
 
+  // Mapa de Localização
+  const mapCard = document.getElementById('sellerMapCard');
+  if (mapCard && p.latitude && p.longitude) {
+    mapCard.style.display = 'block';
+    
+    // Pequeno delay para garantir que a div está visível antes de iniciar o Leaflet
+    setTimeout(() => {
+      // Se o mapa já existir, remove e cria de novo
+      if (window.productMapInstance) {
+        window.productMapInstance.remove();
+      }
+      
+      const map = L.map('productMap').setView([p.latitude, p.longitude], 14);
+      window.productMapInstance = map;
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+      }).addTo(map);
+
+      const marker = L.marker([p.latitude, p.longitude]).addTo(map);
+      marker.bindPopup(`<b>${p.vendedor_nome || 'Loja'}</b><br>${p.provincia || ''}, ${p.municipio || ''}`).openPopup();
+    }, 100);
+  } else if (mapCard) {
+    mapCard.style.display = 'none';
+  }
+
   const buyBtn = document.getElementById('btnComprar');
   const buyNowBtn = document.getElementById('btnComprarAgora');
   

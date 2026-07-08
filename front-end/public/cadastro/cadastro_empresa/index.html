@@ -9,6 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 </head>
 <body>
   <div class="container">
@@ -119,6 +121,15 @@
             <div class="input-group full">
               <label for="companyWhatsapp">WhatsApp Empresarial</label>
               <input id="companyWhatsapp" name="companyWhatsapp" type="tel" placeholder="Ex.: +244 923 000 000" required>
+            </div>
+
+            <!-- Mapa de Localização -->
+            <div class="input-group full">
+              <label>Marque a sua localização no mapa (Opcional)</label>
+              <button type="button" class="btn back-btn" id="btnPegarLocalizacaoEmp" style="margin-bottom: 10px; width: auto; font-size: 14px; padding: 5px 10px;">📍 Usar Minha Localização Atual</button>
+              <div id="mapaLocalizacaoEmp" style="height: 250px; border-radius: 8px; border: 1px solid #ddd; z-index: 1;"></div>
+              <input type="hidden" id="empLatitude">
+              <input type="hidden" id="empLongitude">
             </div>
           </div>
 
@@ -299,7 +310,55 @@
 
   <!-- Scripts essenciais para validacao e submissao -->
   <script src="../../js/toast.js"></script>
-  <script src="../../js/api.js"></script>
+  <script src="../../js/toast.js"></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="../../js/cadastros.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Iniciar mapa no Step 1
+      let latitude = -8.839988; // Default Luanda
+      let longitude = 13.289437;
+      
+      const map = L.map('mapaLocalizacaoEmp').setView([latitude, longitude], 12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      let marker = L.marker([latitude, longitude], {draggable: true}).addTo(map);
+
+      // Ao arrastar o marcador
+      marker.on('dragend', function() {
+        const pos = marker.getLatLng();
+        document.getElementById('empLatitude').value = pos.lat;
+        document.getElementById('empLongitude').value = pos.lng;
+      });
+
+      // Ao clicar no mapa
+      map.on('click', function(e) {
+        marker.setLatLng(e.latlng);
+        document.getElementById('empLatitude').value = e.latlng.lat;
+        document.getElementById('empLongitude').value = e.latlng.lng;
+      });
+
+      // Localização por GPS
+      document.getElementById('btnPegarLocalizacaoEmp').addEventListener('click', function() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            map.setView([lat, lng], 15);
+            marker.setLatLng([lat, lng]);
+            document.getElementById('empLatitude').value = lat;
+            document.getElementById('empLongitude').value = lng;
+          });
+        }
+      });
+      
+      // Fix map rendering issue when it is hidden initially
+      setTimeout(() => map.invalidateSize(), 500);
+    });
+  </script>
 </body>
 </html>

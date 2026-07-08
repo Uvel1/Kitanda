@@ -88,9 +88,28 @@ def listar_produtos(
 
 @router.get("/{produto_id}", response_model=ProdutoResponseSchema)
 def ver_produto(produto_id: int, db: Session = Depends(get_db)):
-    produto = db.query(Produto).filter(Produto.id == produto_id, Produto.ativo == True).first()
+    from sqlalchemy.orm import joinedload
+    from app.models.models import PerfilVendedor, Utilizador, Endereco
+    
+    produto = db.query(Produto).options(
+        joinedload(Produto.vendedor).joinedload(PerfilVendedor.utilizador).joinedload(Utilizador.endereco)
+    ).filter(Produto.id == produto_id, Produto.ativo == True).first()
+    
     if not produto:
         raise HTTPException(status_code=404, detail="Produto não encontrado")
+        
+    # Attach extra fields dynamically
+    if produto.vendedor and produto.vendedor.utilizador:
+        produto.vendedor_nome = produto.vendedor.nome_loja
+        produto.vendedor_telefone = produto.vendedor.utilizador.numero_telefone
+        if produto.vendedor.utilizador.endereco:
+            end = produto.vendedor.utilizador.endereco
+            produto.provincia = end.provincia
+            produto.municipio = end.municipio
+            produto.bairro = end.bairro
+            produto.latitude = end.latitude
+            produto.longitude = end.longitude
+            
     return produto
 
 

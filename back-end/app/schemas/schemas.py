@@ -325,6 +325,15 @@ class ProdutoResponseSchema(ProdutoCreateSchema):
     avaliacao_media: float
     criado_em: datetime
     imagens: list[ImagemProdutoResponseSchema] = []
+    
+    # Extra fields populated for frontend
+    vendedor_nome: Optional[str] = None
+    vendedor_telefone: Optional[str] = None
+    provincia: Optional[str] = None
+    municipio: Optional[str] = None
+    bairro: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
 
     class Config:
         from_attributes = True

@@ -12,6 +12,7 @@
 ## 🎯 Visão Geral
 
 **Kitanda** é uma aplicação de e-commerce que permite:
+
 - 👥 **Compradores:** Explorar produtos, fazer pedidos, conversar com vendedores
 - 🏪 **Vendedores:** Gerir loja, listar produtos/serviços, processar pedidos
 - 💼 **Empresas:** Vender múltiplos produtos/serviços
@@ -26,29 +27,32 @@ Frontend (HTML + JavaScript)       Backend (Python FastAPI)       Database (Post
 http://127.0.0.1:5500    →→→    http://localhost:8000    →→→    localhost:5432
 ```
 
-| Componente | Tecnologia | Porta |
-|-----------|-----------|-------|
+| Componente  | Tecnologia                 | Porta              |
+| ----------- | -------------------------- | ------------------ |
 | 🎨 Frontend | HTML5 + JavaScript Vanilla | 5500 (Live Server) |
-| 🔙 Backend | Python 3.11 + FastAPI | 8000 (Uvicorn) |
-| 🗄️ Database | PostgreSQL 15+ | 5432 |
+| 🔙 Backend  | Python 3.11 + FastAPI      | 8000 (Uvicorn)     |
+| 🗄️ Database | PostgreSQL 15+             | 5432               |
 
 ---
 
 ## 🚀 Quick Start (30 minutos)
 
 ### Pré-Requisitos
+
 - ✅ Python 3.11+
 - ✅ Git
 - ✅ PostgreSQL 15+
 - ✅ VS Code (recomendado)
 
 ### 1️⃣ Clone o Repositório
+
 ```bash
 git clone https://github.com/Uvel1/Kitanda.git
 cd Kitanda
 ```
 
 ### 2️⃣ Setup Automático (Recomendado)
+
 ```powershell
 # Windows PowerShell (como Administrador)
 .\setup_kitanda.ps1
@@ -57,6 +61,7 @@ cd Kitanda
 **Ou manualmente:**
 
 ### 3️⃣ Setup Backend
+
 ```bash
 cd back-end
 python -m venv venv
@@ -65,6 +70,7 @@ pip install -r requirements.txt
 ```
 
 ### 4️⃣ Configurar Base de Dados
+
 ```bash
 # Criar arquivo .env
 # Copie .env.example para .env e preencha:
@@ -73,6 +79,7 @@ SECRET_KEY=sua-chave-secreta
 ```
 
 ### 5️⃣ Executar Migrações
+
 ```bash
 alembic upgrade head
 python seed_render.py  # Dados de teste
@@ -81,17 +88,21 @@ python seed_render.py  # Dados de teste
 ### 6️⃣ Iniciar Servidores
 
 **Terminal 1 - Backend:**
+
 ```bash
 cd back-end
 .\venv\Scripts\Activate.ps1
 uvicorn app.main:app --reload
 ```
+
 → http://localhost:8000/docs
 
 **Terminal 2 - Frontend:**
+
 ```
 front-end/public/index.html → Open with Live Server
 ```
+
 → http://127.0.0.1:5500
 
 ---
@@ -99,6 +110,7 @@ front-end/public/index.html → Open with Live Server
 ## 🧪 Testar
 
 ### Login com Contas de Teste
+
 ```
 Email: comprador@teste.com
 Senha: password123
@@ -107,6 +119,7 @@ Senha: password123
 Outras contas: Ver [DADOS_TESTE.md](DADOS_TESTE.md)
 
 ### Verificar Backend
+
 ```bash
 curl http://localhost:8000/
 # Retorna: {"message":"Welcome to Kitanda API"}
@@ -116,16 +129,16 @@ curl http://localhost:8000/
 
 ## 📚 Documentação
 
-| Documento | Finalidade |
-|-----------|-----------|
-| 📄 [INDICE_DOCUMENTACAO.md](INDICE_DOCUMENTACAO.md) | **🎯 COMECE AQUI** - Guia de qual ler |
-| 📄 [GUIA_CONFIGURACAO.md](GUIA_CONFIGURACAO.md) | Setup passo-a-passo (iniciantes) |
-| 📄 [PLANO_EXECUCAO_NOVO_PC.md](PLANO_EXECUCAO_NOVO_PC.md) | Setup completo com 8 fases |
-| 📄 [GUIA_RAPIDO_AGENT.md](GUIA_RAPIDO_AGENT.md) | Commands prontos (devs experientes) |
-| 📄 [MAPA_VISUAL_SETUP.md](MAPA_VISUAL_SETUP.md) | Diagramas, troubleshooting, checklist |
-| 🔧 [setup_kitanda.ps1](setup_kitanda.ps1) | Script automatizado (PowerShell) |
-| 📄 [DADOS_TESTE.md](DADOS_TESTE.md) | Contas e dados fictícios |
-| 📄 [GUIA_DEPLOY_RENDER.md](GUIA_DEPLOY_RENDER.md) | Deploy em produção |
+| Documento                                                 | Finalidade                            |
+| --------------------------------------------------------- | ------------------------------------- |
+| 📄 [INDICE_DOCUMENTACAO.md](INDICE_DOCUMENTACAO.md)       | **🎯 COMECE AQUI** - Guia de qual ler |
+| 📄 [GUIA_CONFIGURACAO.md](GUIA_CONFIGURACAO.md)           | Setup passo-a-passo (iniciantes)      |
+| 📄 [PLANO_EXECUCAO_NOVO_PC.md](PLANO_EXECUCAO_NOVO_PC.md) | Setup completo com 8 fases            |
+| 📄 [GUIA_RAPIDO_AGENT.md](GUIA_RAPIDO_AGENT.md)           | Commands prontos (devs experientes)   |
+| 📄 [MAPA_VISUAL_SETUP.md](MAPA_VISUAL_SETUP.md)           | Diagramas, troubleshooting, checklist |
+| 🔧 [setup_kitanda.ps1](setup_kitanda.ps1)                 | Script automatizado (PowerShell)      |
+| 📄 [DADOS_TESTE.md](DADOS_TESTE.md)                       | Contas e dados fictícios              |
+| 📄 [GUIA_DEPLOY_RENDER.md](GUIA_DEPLOY_RENDER.md)         | Deploy em produção                    |
 
 **→ [COMECE AQUI: Índice de Documentação](INDICE_DOCUMENTACAO.md)**
 
@@ -133,13 +146,13 @@ curl http://localhost:8000/
 
 ## 🐛 Troubleshooting Rápido
 
-| Problema | Solução |
-|----------|---------|
-| ❌ `ModuleNotFoundError` | Verifique: `cd back-end`, venv ativo, `pip install -r requirements.txt` |
-| ❌ `Connection refused (BD)` | PostgreSQL não está a correr. Inicie via Services |
-| ❌ CORS Error | Backend em `http://localhost:8000`? Verificar `api.js` |
-| ❌ Login falha | Use `comprador@teste.com` / `password123` ou `python seed_render.py` |
-| ❌ Outros erros | Ver: [MAPA_VISUAL_SETUP.md](MAPA_VISUAL_SETUP.md#-troubleshooting-detalhado) |
+| Problema                     | Solução                                                                      |
+| ---------------------------- | ---------------------------------------------------------------------------- |
+| ❌ `ModuleNotFoundError`     | Verifique: `cd back-end`, venv ativo, `pip install -r requirements.txt`      |
+| ❌ `Connection refused (BD)` | PostgreSQL não está a correr. Inicie via Services                            |
+| ❌ CORS Error                | Backend em `http://localhost:8000`? Verificar `api.js`                       |
+| ❌ Login falha               | Use `comprador@teste.com` / `password123` ou `python seed_render.py`         |
+| ❌ Outros erros              | Ver: [MAPA_VISUAL_SETUP.md](MAPA_VISUAL_SETUP.md#-troubleshooting-detalhado) |
 
 ---
 
@@ -188,10 +201,12 @@ Kitanda/
 ## 🔐 Segurança
 
 ### Desenvolvimento
+
 - ✅ CORS permitido para todos (`allow_origins=["*"]`)
 - ✅ Senha padrão: `password123`
 
 ### Produção
+
 - ⚠️ **NUNCA** commitar `.env`
 - ⚠️ Alterar `SECRET_KEY` para valor aleatório forte
 - ⚠️ Usar DATABASE_URL de produção
@@ -205,6 +220,7 @@ Ver: [GUIA_DEPLOY_RENDER.md](GUIA_DEPLOY_RENDER.md#-segurança)
 ## 🛠️ Stack Técnico
 
 ### Backend
+
 - **Framework:** FastAPI 0.111.0
 - **Servidor:** Uvicorn 0.29.0
 - **ORM:** SQLAlchemy 2.0.30
@@ -214,12 +230,14 @@ Ver: [GUIA_DEPLOY_RENDER.md](GUIA_DEPLOY_RENDER.md#-segurança)
 - **WebSocket:** WebSockets 12.0
 
 ### Frontend
+
 - **HTML5**
 - **CSS3**
 - **JavaScript Vanilla** (sem frameworks)
 - **HTTP Client:** Fetch API
 
 ### Database
+
 - **PostgreSQL 15+**
 - **Migrations:** Alembic
 
@@ -227,11 +245,11 @@ Ver: [GUIA_DEPLOY_RENDER.md](GUIA_DEPLOY_RENDER.md#-segurança)
 
 ## 📞 Equipa
 
-| Papel | Responsável |
-|------|-------------|
-| Backend | Uveli Afonso |
-| Backend/Admin | Elimar Veiga |
-| Frontend | (A completar) |
+| Papel         | Responsável   |
+| ------------- | ------------- |
+| Backend       | Uveli Afonso  |
+| Backend/Admin | Elimar Veiga  |
+| Frontend      | (A completar) |
 
 ---
 

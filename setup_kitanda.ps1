@@ -43,7 +43,8 @@ $prereqs_ok = $true
 if (Test-Command python) {
     $pythonVersion = python --version 2>&1
     Write-Status "✓ Python encontrado: $pythonVersion" "Success"
-} else {
+}
+else {
     Write-Status "✗ Python NÃO encontrado. Instale de: https://python.org/downloads" "Error"
     $prereqs_ok = $false
 }
@@ -51,7 +52,8 @@ if (Test-Command python) {
 # Git
 if (Test-Command git) {
     Write-Status "✓ Git encontrado" "Success"
-} else {
+}
+else {
     Write-Status "✗ Git NÃO encontrado. Instale de: https://git-scm.com/download/win" "Error"
     $prereqs_ok = $false
 }
@@ -59,7 +61,8 @@ if (Test-Command git) {
 # PostgreSQL
 if (Test-Command psql) {
     Write-Status "✓ PostgreSQL encontrado" "Success"
-} else {
+}
+else {
     Write-Status "✗ PostgreSQL NÃO encontrado. Instale de: https://postgresql.org/download/windows" "Error"
     $prereqs_ok = $false
 }
@@ -92,9 +95,11 @@ if (Test-Path $kitandaPath) {
     if ($response -eq 'r') {
         Remove-Item $kitandaPath -Recurse -Force
         Write-Status "Pasta removida" "Success"
-    } elseif ($response -eq 'c') {
+    }
+    elseif ($response -eq 'c') {
         exit 0
-    } else {
+    }
+    else {
         Write-Status "Continuando com pasta existente..." "Info"
     }
 }
@@ -103,7 +108,8 @@ if (-not (Test-Path $kitandaPath)) {
     Set-Location $projectPath
     git clone https://github.com/Uvel1/Kitanda.git
     Write-Status "✓ Repositório clonado" "Success"
-} else {
+}
+else {
     Write-Status "✓ Repositório já existe" "Success"
 }
 
@@ -129,7 +135,8 @@ if (-not (Test-Path $venvPath)) {
     Write-Status "Criando ambiente virtual..." "Info"
     python -m venv venv
     Write-Status "✓ Ambiente virtual criado" "Success"
-} else {
+}
+else {
     Write-Status "✓ Ambiente virtual já existe" "Success"
 }
 
@@ -164,7 +171,7 @@ if (-not (Test-Path $envFile)) {
     $dbPassword = Read-Host "Qual é a password do PostgreSQL? (padrão: Ilevuosnof@!)"
     if ([string]::IsNullOrEmpty($dbPassword)) { $dbPassword = "Ilevuosnof@!" }
     
-    $secretKey = -join ((48..57) + (65..90) + (97..122) | Get-Random -Count 32 | % {[char]$_})
+    $secretKey = -join ((48..57) + (65..90) + (97..122) | Get-Random -Count 32 | % { [char]$_ })
     
     $envContent = @"
 DATABASE_URL=postgresql://postgres:$dbPassword@localhost:5432/kitanda_db
@@ -185,7 +192,8 @@ SMS_SENDER_ID=Kitanda
     Write-Status "✓ Arquivo .env criado" "Success"
     Write-Status "  SECRET_KEY gerada automaticamente" "Info"
     Write-Status "  DATABASE_URL configurada com password fornecida" "Info"
-} else {
+}
+else {
     Write-Status "✓ Arquivo .env já existe" "Success"
 }
 
@@ -202,12 +210,14 @@ try {
     
     if ($output -match "1") {
         Write-Status "✓ Base de dados kitanda_db já existe" "Success"
-    } else {
+    }
+    else {
         Write-Status "Criando base de dados kitanda_db..." "Info"
         psql -U postgres -c "CREATE DATABASE kitanda_db;" 2>&1 | Out-Null
         Write-Status "✓ Base de dados criada" "Success"
     }
-} catch {
+}
+catch {
     Write-Status "⚠ Erro ao verificar/criar BD. Crie manualmente via pgAdmin ou execute:" "Warning"
     Write-Status "  psql -U postgres" "Warning"
     Write-Status "  CREATE DATABASE kitanda_db;" "Warning"
@@ -218,7 +228,8 @@ Write-Status "Aplicando migrações..." "Info"
 try {
     alembic upgrade head 2>&1 | Out-Null
     Write-Status "✓ Migrações aplicadas com sucesso" "Success"
-} catch {
+}
+catch {
     Write-Status "⚠ Erro ao aplicar migrações. Tente manualmente:" "Warning"
     Write-Status "  alembic upgrade head" "Warning"
 }
@@ -237,10 +248,12 @@ if (Test-Path $frontendPath) {
     $apiContent = Get-Content $frontendPath -Raw
     if ($apiContent -match "localhost:8000") {
         Write-Status "✓ Frontend configurado para localhost:8000" "Success"
-    } else {
+    }
+    else {
         Write-Status "⚠ Verificar configuração de API em: $frontendPath" "Warning"
     }
-} else {
+}
+else {
     Write-Status "✗ Arquivo api.js não encontrado em: $frontendPath" "Error"
 }
 
@@ -260,10 +273,12 @@ if ($response -eq 's') {
     if (Test-Path "$backendPath\seed_render.py") {
         python seed_render.py --quiet 2>&1 | Out-Null
         Write-Status "✓ Dados de teste inseridos (seed_render.py)" "Success"
-    } else {
+    }
+    else {
         Write-Status "⚠ Script seed não encontrado" "Warning"
     }
-} else {
+}
+else {
     Write-Status "Base de dados não foi populada" "Info"
 }
 

@@ -174,6 +174,7 @@ Para popular BD:
 ## 📚 Todos os Documentos
 
 ### 1. 🚀 **GUIA_CONFIGURACAO.md**
+
 - **Para:** Iniciantes, setup do zero
 - **Tempo:** 30-45 minutos
 - **Conteúdo:**
@@ -184,6 +185,7 @@ Para popular BD:
   - Iniciar servidores
 
 ### 2. 📋 **PLANO_EXECUCAO_NOVO_PC.md**
+
 - **Para:** Detalhamento completo, agentes, devs
 - **Tempo:** 50 minutos (leitura + execução)
 - **Conteúdo:**
@@ -194,6 +196,7 @@ Para popular BD:
   - Tempos realistas por fase
 
 ### 3. ⚡ **GUIA_RAPIDO_AGENT.md**
+
 - **Para:** Dev experiente, setup rápido
 - **Tempo:** 30 minutos
 - **Conteúdo:**
@@ -203,6 +206,7 @@ Para popular BD:
   - Troubleshooting conciso
 
 ### 4. 🎯 **MAPA_VISUAL_SETUP.md**
+
 - **Para:** Compreender fluxo, resolver problemas
 - **Tempo:** 20 minutos leitura
 - **Conteúdo:**
@@ -213,6 +217,7 @@ Para popular BD:
   - Tempos realistas
 
 ### 5. 🔧 **setup_kitanda.ps1**
+
 - **Para:** Automação total
 - **Tempo:** 20 minutos (execução automática)
 - **Conteúdo:**
@@ -222,6 +227,7 @@ Para popular BD:
   - Cria BD, migrações, seed dados
 
 ### 6. 📄 **DADOS_TESTE.md**
+
 - **Para:** Entender dados fictícios
 - **Tempo:** 5 minutos leitura
 - **Conteúdo:**
@@ -230,6 +236,7 @@ Para popular BD:
   - Instruções login
 
 ### 7. 🌐 **GUIA_DEPLOY_RENDER.md**
+
 - **Para:** Deploy em produção
 - **Tempo:** 30 minutos
 - **Conteúdo:**

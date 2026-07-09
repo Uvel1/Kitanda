@@ -144,12 +144,14 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 **Esperado:**
+
 ```
 INFO:     Uvicorn running on http://0.0.0.0:8000
 INFO:     Application startup complete
 ```
 
 **URLs:**
+
 - API: `http://localhost:8000`
 - Docs (Swagger): `http://localhost:8000/docs`
 - ReDoc: `http://localhost:8000/redoc`
@@ -157,6 +159,7 @@ INFO:     Application startup complete
 ### Terminal 2 - Frontend (Live Server)
 
 No VS Code:
+
 ```
 1. Abra: front-end/public/index.html
 2. Botão direito → Open with Live Server
@@ -164,6 +167,7 @@ No VS Code:
 ```
 
 Ou via terminal:
+
 ```powershell
 # Se tiver npm instalado:
 npx live-server front-end/public/
@@ -174,6 +178,7 @@ npx live-server front-end/public/
 ## ✅ Testes Rápidos
 
 ### 1. Backend Respondendo?
+
 ```bash
 # Navegador:
 http://localhost:8000/docs
@@ -183,19 +188,23 @@ curl http://localhost:8000/
 ```
 
 ### 2. Frontend Carrega?
+
 ```bash
 # Navegador:
 http://127.0.0.1:5500
 ```
 
 ### 3. BD Conectada?
+
 ```powershell
 # Terminal (no back-end com venv ativo):
 python check_db.py
 ```
 
 ### 4. Login Funciona?
+
 Aceda a `http://127.0.0.1:5500` e faça login com:
+
 - Email: `comprador@teste.com`
 - Senha: `password123`
 
@@ -209,10 +218,10 @@ Aceda a `http://127.0.0.1:5500` e faça login com:
 
 ```javascript
 // Linha 3-5: Verificar base URL
-const API_BASE_URL = 'http://localhost:8000/api/v1';
+const API_BASE_URL = "http://localhost:8000/api/v1";
 
 // Em PRODUÇÃO mude para:
-const API_BASE_URL = 'https://seu-dominio.com/api/v1';
+const API_BASE_URL = "https://seu-dominio.com/api/v1";
 ```
 
 ### Backend → Database
@@ -246,16 +255,16 @@ EMAIL_FROM=seu-email@gmail.com
 
 ## 🐛 Troubleshooting Rápido
 
-| Erro | Solução |
-|------|---------|
-| `ModuleNotFoundError: No module named 'app'` | Confirme venv ativo, cwd é `back-end/`, `pip install -r requirements.txt` |
-| `could not connect to server` | PostgreSQL não está rodando. Inicie via Services do Windows |
-| `CORS error` | Backend não está em `http://localhost:8000`. Inicie em Terminal 1 |
-| `Connection refused on port 5500` | Live Server não iniciado. Abra `index.html` e click "Open with Live Server" |
-| `python: command not found` | Python não no PATH. Reinstale com "Add to PATH" ativado |
-| `scripts disabled` PowerShell | Execute como admin: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` |
-| `database kitanda_db does not exist` | Criar BD: `psql -U postgres` → `CREATE DATABASE kitanda_db;` |
-| `alembic migration failed` | Verificar `.env` DATABASE_URL, BD existe, PostgreSQL rodando |
+| Erro                                         | Solução                                                                                    |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `ModuleNotFoundError: No module named 'app'` | Confirme venv ativo, cwd é `back-end/`, `pip install -r requirements.txt`                  |
+| `could not connect to server`                | PostgreSQL não está rodando. Inicie via Services do Windows                                |
+| `CORS error`                                 | Backend não está em `http://localhost:8000`. Inicie em Terminal 1                          |
+| `Connection refused on port 5500`            | Live Server não iniciado. Abra `index.html` e click "Open with Live Server"                |
+| `python: command not found`                  | Python não no PATH. Reinstale com "Add to PATH" ativado                                    |
+| `scripts disabled` PowerShell                | Execute como admin: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` |
+| `database kitanda_db does not exist`         | Criar BD: `psql -U postgres` → `CREATE DATABASE kitanda_db;`                               |
+| `alembic migration failed`                   | Verificar `.env` DATABASE_URL, BD existe, PostgreSQL rodando                               |
 
 ---
 
@@ -356,6 +365,7 @@ git status  # Confirme .env em .gitignore
 ## 📞 Suporte
 
 Ficheiros complementares:
+
 - [PLANO_EXECUCAO_NOVO_PC.md](PLANO_EXECUCAO_NOVO_PC.md) - Guia completo
 - [GUIA_CONFIGURACAO.md](GUIA_CONFIGURACAO.md) - Setup detalhado
 - [DADOS_TESTE.md](DADOS_TESTE.md) - Dados de teste

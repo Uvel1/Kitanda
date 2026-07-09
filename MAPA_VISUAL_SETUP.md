@@ -169,6 +169,7 @@ C:\Projetos\Kitanda/
 ## 🔍 Checklist de Verificação
 
 ### ✅ Pré-Requisitos Instalados?
+
 - [ ] `python --version` retorna 3.11+
 - [ ] `git --version` funciona
 - [ ] `psql --version` funciona
@@ -176,32 +177,38 @@ C:\Projetos\Kitanda/
 - [ ] Extensões: Python, Live Server
 
 ### ✅ Repositório Clonado?
+
 - [ ] Pasta `C:\Projetos\Kitanda` existe
 - [ ] Contém pastas `back-end` e `front-end`
 - [ ] Ficheiros `.md` presentes
 
 ### ✅ Backend Configurado?
+
 - [ ] Pasta `back-end\venv` existe
 - [ ] Arquivo `.env` existe e preenchido
 - [ ] `pip list` mostra: fastapi, sqlalchemy, psycopg2, etc.
 
 ### ✅ Database Pronta?
+
 - [ ] PostgreSQL a correr (Services do Windows)
 - [ ] Base de dados `kitanda_db` criada
 - [ ] `alembic current` retorna versão atual
 - [ ] `python check_db.py` conecta com sucesso
 
 ### ✅ Frontend Verificado?
+
 - [ ] `front-end/public/js/api.js` tem `API_BASE_URL = 'http://localhost:8000'`
 - [ ] Ficheiro `index.html` acessível
 
 ### ✅ Servidores Rodando?
+
 - [ ] Backend: `http://localhost:8000` retorna resposta
 - [ ] Backend Docs: `http://localhost:8000/docs` carrega Swagger
 - [ ] Frontend: `http://127.0.0.1:5500` carrega página
 - [ ] Sem erros CORS no console (F12)
 
 ### ✅ Login Funciona?
+
 - [ ] Email: `comprador@teste.com` / Senha: `password123` - ✓ Login bem-sucedido
 - [ ] Redireciona para dashboard ou explorar
 
@@ -212,17 +219,20 @@ C:\Projetos\Kitanda/
 ### Erro: "ModuleNotFoundError: No module named 'app'"
 
 **Sintomas:**
+
 ```
 ModuleNotFoundError: No module named 'app'
   at line: from app.api.v1.endpoints import ...
 ```
 
 **Causas Possíveis:**
+
 1. ❌ Não está na pasta `back-end/`
 2. ❌ `venv` não está ativado
 3. ❌ Dependências não instaladas
 
 **Solução:**
+
 ```powershell
 # ✓ Confirme localização
 cd C:\Projetos\Kitanda\back-end
@@ -242,18 +252,21 @@ uvicorn app.main:app --reload
 ### Erro: "could not connect to server: Connection refused"
 
 **Sintomas:**
+
 ```
 could not connect to server: Connection refused
   Is the server running on host "localhost" (127.0.0.1) port 5432?
 ```
 
 **Causas Possíveis:**
+
 1. ❌ PostgreSQL não está a correr
 2. ❌ Password em `.env` está errada
 3. ❌ Base de dados não existe
 4. ❌ Porta 5432 bloqueada
 
 **Solução:**
+
 ```powershell
 # ✓ Verificar PostgreSQL a correr
 # Abra Services do Windows (services.msc)
@@ -280,20 +293,23 @@ uvicorn app.main:app --reload
 ### Erro: "CORS error in browser console"
 
 **Sintomas:**
+
 ```
-Access to XMLHttpRequest at 'http://localhost:8000/...' from origin 
+Access to XMLHttpRequest at 'http://localhost:8000/...' from origin
 'http://127.0.0.1:5500' has been blocked by CORS policy
 ```
 
 **Causas Possíveis:**
+
 1. ❌ Backend não está a correr
 2. ❌ `API_BASE_URL` em `api.js` está errada
 3. ❌ CORS não está habilitado em backend
 
 **Solução:**
+
 ```javascript
 // ✓ Verificar front-end/public/js/api.js linha 3-5
-const API_BASE_URL = 'http://localhost:8000/api/v1';
+const API_BASE_URL = "http://localhost:8000/api/v1";
 // Não 'https://', não 'http://localhost:3000', etc.
 ```
 
@@ -309,6 +325,7 @@ app.add_middleware(
 ```
 
 **Verificação:**
+
 ```bash
 # Terminal, ping backend:
 curl http://localhost:8000/
@@ -321,14 +338,17 @@ curl http://localhost:8000/
 ### Erro: "scripts are disabled on this system"
 
 **Sintomas:**
+
 ```
 cannot be loaded because running scripts is disabled on this system.
 ```
 
 **Causas:**
+
 - PowerShell tem política de segurança
 
 **Solução:**
+
 ```powershell
 # ✓ Execute como Administrador
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
@@ -343,15 +363,18 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ### Erro: "alembic upgrade head" Fails
 
 **Sintomas:**
+
 ```
-sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) 
+sqlalchemy.exc.OperationalError: (psycopg2.OperationalError)
 FATAL: password authentication failed for user "postgres"
 ```
 
 **Causas:**
+
 - DATABASE_URL em `.env` tem password errada
 
 **Solução:**
+
 ```env
 # ✓ Edite back-end/.env
 # Substitua "Ilevuosnof@!" pela sua senha real do PostgreSQL
@@ -362,6 +385,7 @@ psql -U postgres -h localhost -d kitanda_db
 ```
 
 Se não sabe a password:
+
 ```powershell
 # ✓ Resete via pgAdmin 4:
 # 1. Abra pgAdmin 4
@@ -376,15 +400,18 @@ Se não sabe a password:
 ### Erro: "Live Server não abre no navegador"
 
 **Sintomas:**
+
 - Clicar "Open with Live Server" não faz nada
 - Ou abre mas diz "Cannot GET /"
 
 **Causas:**
+
 - Extensão não instalada
 - Ficheiro html inválido
 - Porta 5500 bloqueada
 
 **Solução:**
+
 ```
 ✓ Passo 1: Verificar extensão
   - VS Code → Extensions (Ctrl+Shift+X)
@@ -409,17 +436,20 @@ Se não sabe a password:
 ### Erro: "Login falha - 401 Unauthorized"
 
 **Sintomas:**
+
 ```
 POST http://localhost:8000/api/v1/login
 Status: 401 Unauthorized
 ```
 
 **Causas:**
+
 1. ❌ Email/senha errados
 2. ❌ Dados de teste não foram inseridos
 3. ❌ Backend não consegue conectar BD
 
 **Solução:**
+
 ```powershell
 # ✓ Verificar dados inseridos:
 cd C:\Projetos\Kitanda\back-end
@@ -443,6 +473,7 @@ python check_db.py
 ```
 
 **Contas de Teste Padrão:**
+
 ```
 Email: comprador@teste.com
 Senha: password123
@@ -459,6 +490,7 @@ Senha: password123
 ## 📞 Quando Tudo Falhar
 
 ### Passo 1: Recolher Informações
+
 ```powershell
 # Terminal 1: Erro do Backend
 python --version
@@ -474,12 +506,14 @@ F12 → Console → Ver erros
 ```
 
 ### Passo 2: Verificar Básico
+
 - [ ] PostgreSQL a correr? (Services)
 - [ ] Backend retorna resposta? (`curl http://localhost:8000`)
 - [ ] Frontend carrega? (Browser `http://127.0.0.1:5500`)
 - [ ] Sem erros CORS? (DevTools → Network)
 
 ### Passo 3: Limpar e Recomeçar
+
 ```powershell
 # Opção A: Limpar venv
 cd C:\Projetos\Kitanda\back-end
@@ -536,18 +570,18 @@ git clone https://github.com/Uvel1/Kitanda.git
 
 ## ⏱️ Tempos Realistas
 
-| Ação | Tempo | Notas |
-|------|-------|-------|
-| Instalar Python+Git+PG | 20-30min | Primeira vez, download lento |
-| Clone Kitanda | 2-5min | Depende internet |
-| `pip install -r requirements.txt` | 3-5min | Downlad pacotes |
-| Criar BD + migrações | 2-3min | Se PG está pronto |
-| Seed dados teste | 1-2min | Opcional |
-| Start Backend | 2min | Compilação + startup |
-| Start Frontend | 1min | Live Server quick |
-| Teste Login | 2-3min | Validação completa |
-| **TOTAL PRIMEIRA VEZ** | **35-50min** | Sem pedir ajuda |
-| **Startups subsequentes** | **2-3min** | Só ligar servidores |
+| Ação                              | Tempo        | Notas                        |
+| --------------------------------- | ------------ | ---------------------------- |
+| Instalar Python+Git+PG            | 20-30min     | Primeira vez, download lento |
+| Clone Kitanda                     | 2-5min       | Depende internet             |
+| `pip install -r requirements.txt` | 3-5min       | Downlad pacotes              |
+| Criar BD + migrações              | 2-3min       | Se PG está pronto            |
+| Seed dados teste                  | 1-2min       | Opcional                     |
+| Start Backend                     | 2min         | Compilação + startup         |
+| Start Frontend                    | 1min         | Live Server quick            |
+| Teste Login                       | 2-3min       | Validação completa           |
+| **TOTAL PRIMEIRA VEZ**            | **35-50min** | Sem pedir ajuda              |
+| **Startups subsequentes**         | **2-3min**   | Só ligar servidores          |
 
 ---
 

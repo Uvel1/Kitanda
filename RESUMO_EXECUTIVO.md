@@ -2,7 +2,7 @@
 
 **Documento:** Resumo de todos os guias  
 **Data:** 2026-07-09  
-**Tempo para Setup:** 30-60 minutos (primeira vez)  
+**Tempo para Setup:** 30-60 minutos (primeira vez)
 
 ---
 
@@ -15,6 +15,7 @@
 ## 🎯 O Que É Kitanda
 
 Uma plataforma de e-commerce para Angola com:
+
 - **Frontend:** Site HTML+JS que roda em `http://127.0.0.1:5500`
 - **Backend:** API Python FastAPI que roda em `http://localhost:8000`
 - **Database:** PostgreSQL em `localhost:5432`
@@ -25,17 +26,21 @@ Uma plataforma de e-commerce para Angola com:
 ## ⚡ 3 Formas de Setup
 
 ### Opção 1: Automática (Recomendado) - 15 min
+
 ```powershell
 .\setup_kitanda.ps1
 ```
+
 ✅ Faz tudo automaticamente  
 ✅ Cria venv, instala dependências, cria BD, popula dados  
-✅ Dá instruções finais  
+✅ Dá instruções finais
 
 ### Opção 2: Rápida Manual - 30 min
+
 Seguir: [GUIA_RAPIDO_AGENT.md](GUIA_RAPIDO_AGENT.md)
 
 ### Opção 3: Completa Detalhada - 50 min
+
 Seguir: [PLANO_EXECUCAO_NOVO_PC.md](PLANO_EXECUCAO_NOVO_PC.md)
 
 ---
@@ -166,17 +171,17 @@ CENÁRIO 4: Script PowerShell não executa
 
 ## 📚 Ficheiros de Documentação
 
-| Ficheiro | Tempo | Caso de Uso |
-|----------|-------|-----------|
-| [README_SETUP.md](README_SETUP.md) | 5 min | Visão geral rápida |
-| [INDICE_DOCUMENTACAO.md](INDICE_DOCUMENTACAO.md) | 5 min | Escolher qual ler ← COMECE AQUI |
-| [GUIA_CONFIGURACAO.md](GUIA_CONFIGURACAO.md) | 30 min | Iniciantes (passo-a-passo) |
+| Ficheiro                                               | Tempo  | Caso de Uso                      |
+| ------------------------------------------------------ | ------ | -------------------------------- |
+| [README_SETUP.md](README_SETUP.md)                     | 5 min  | Visão geral rápida               |
+| [INDICE_DOCUMENTACAO.md](INDICE_DOCUMENTACAO.md)       | 5 min  | Escolher qual ler ← COMECE AQUI  |
+| [GUIA_CONFIGURACAO.md](GUIA_CONFIGURACAO.md)           | 30 min | Iniciantes (passo-a-passo)       |
 | [PLANO_EXECUCAO_NOVO_PC.md](PLANO_EXECUCAO_NOVO_PC.md) | 50 min | Setup completo + troubleshooting |
-| [GUIA_RAPIDO_AGENT.md](GUIA_RAPIDO_AGENT.md) | 30 min | Dev experiente (copy-paste) |
-| [MAPA_VISUAL_SETUP.md](MAPA_VISUAL_SETUP.md) | 30 min | Resolver erros específicos |
-| [DADOS_TESTE.md](DADOS_TESTE.md) | 5 min | Contas de teste |
-| [GUIA_DEPLOY_RENDER.md](GUIA_DEPLOY_RENDER.md) | 30 min | Deploy produção |
-| [setup_kitanda.ps1](setup_kitanda.ps1) | 20 min | Executar automaticamente |
+| [GUIA_RAPIDO_AGENT.md](GUIA_RAPIDO_AGENT.md)           | 30 min | Dev experiente (copy-paste)      |
+| [MAPA_VISUAL_SETUP.md](MAPA_VISUAL_SETUP.md)           | 30 min | Resolver erros específicos       |
+| [DADOS_TESTE.md](DADOS_TESTE.md)                       | 5 min  | Contas de teste                  |
+| [GUIA_DEPLOY_RENDER.md](GUIA_DEPLOY_RENDER.md)         | 30 min | Deploy produção                  |
+| [setup_kitanda.ps1](setup_kitanda.ps1)                 | 20 min | Executar automaticamente         |
 
 ---
 
@@ -282,18 +287,21 @@ Contas Teste (inseridas via seed):
 ## 🎓 Próximas Ações
 
 ### Imediatas (Hoje)
+
 1. ✅ Clonar repositório
 2. ✅ Executar setup (automático ou manual)
 3. ✅ Testar login
 4. ✅ Explorar interface
 
 ### Curto Prazo (Esta Semana)
+
 1. ⬜ Ler [PLANO_EXECUCAO_NOVO_PC.md](PLANO_EXECUCAO_NOVO_PC.md)
 2. ⬜ Compreender arquitetura ([MAPA_VISUAL_SETUP.md](MAPA_VISUAL_SETUP.md))
 3. ⬜ Fazer mudança pequena no código
 4. ⬜ Testar frontend + backend integration
 
 ### Médio Prazo (Este Mês)
+
 1. ⬜ Entender fluxo de autenticação
 2. ⬜ Implementar nova feature
 3. ⬜ Fazer deploy em staging

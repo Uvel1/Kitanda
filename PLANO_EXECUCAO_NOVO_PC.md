@@ -26,6 +26,7 @@ KITANDA (Projeto Completo)
 ## ⚙️ FASE 0: Pré-Requisitos do Sistema
 
 ### O.1 Verificar Requisitos Mínimos
+
 - **SO:** Windows 10 ou superior
 - **RAM:** Mínimo 4GB (recomendado 8GB)
 - **Espaço em disco:** Mínimo 2GB livres
@@ -34,6 +35,7 @@ KITANDA (Projeto Completo)
 ### O.2 Instalar Ferramentas Essenciais
 
 #### 🐍 Python 3.11+
+
 1. Download: https://www.python.org/downloads/
 2. **⚠️ CRÍTICO:** Marcar "Add python.exe to PATH" durante instalação
 3. Verificar: Abra PowerShell e execute:
@@ -43,6 +45,7 @@ KITANDA (Projeto Completo)
    Deve mostrar: `Python 3.11.x` ou superior
 
 #### 📝 Git
+
 1. Download: https://git-scm.com/download/win
 2. Instale com configurações padrão
 3. Verificar: Execute no PowerShell:
@@ -51,6 +54,7 @@ KITANDA (Projeto Completo)
    ```
 
 #### 🗄️ PostgreSQL 15+
+
 1. Download: https://www.postgresql.org/download/windows/
 2. Durante instalação:
    - **Defina password do superuser (postgres):** `Ilevuosnof@!` (ou a sua escolha)
@@ -59,9 +63,11 @@ KITANDA (Projeto Completo)
 3. Verificar: Abra pgAdmin 4 e confirme que se conecta
 
 #### 📦 Node.js (Opcional, apenas para Live Server alternativa)
+
 - Geralmente não necessário se usar a extensão Live Server do VS Code
 
 #### 💻 VS Code
+
 1. Download: https://code.visualstudio.com/
 2. Instale versão Windows (64-bit recomendado)
 3. Instale extensões após abrir:
@@ -74,6 +80,7 @@ KITANDA (Projeto Completo)
 ## 📂 FASE 1: Clonar o Repositório
 
 ### 1.1 Criar Pasta Base
+
 ```powershell
 # Abra PowerShell e execute:
 mkdir C:\Projetos
@@ -81,13 +88,16 @@ cd C:\Projetos
 ```
 
 ### 1.2 Clonar o Repositório
+
 ```powershell
 git clone https://github.com/Uvel1/Kitanda.git
 cd Kitanda
 ```
 
 ### 1.3 Verificar Estrutura
+
 Confirme que vê esta estrutura:
+
 ```
 Kitanda/
 ├── back-end/          ✓
@@ -102,28 +112,36 @@ Kitanda/
 ## 🔧 FASE 2: Configurar Backend
 
 ### 2.1 Criar Ambiente Virtual Python
+
 ```powershell
 cd C:\Projetos\Kitanda\back-end
 python -m venv venv
 ```
+
 Aguarde até aparecer a pasta `venv/`
 
 ### 2.2 Ativar Ambiente Virtual
+
 ```powershell
 .\venv\Scripts\activate
 ```
+
 ✓ Se vir `(venv)` a verde no terminal, está correto!
 
 ### 2.3 Atualizar pip
+
 ```powershell
 python -m pip install --upgrade pip
 ```
 
 ### 2.4 Instalar Dependências
+
 ```powershell
 pip install -r requirements.txt
 ```
+
 Isto vai descarregar:
+
 - ✅ fastapi, uvicorn (servidor web)
 - ✅ sqlalchemy, alembic (base de dados)
 - ✅ psycopg2 (conector PostgreSQL)
@@ -140,6 +158,7 @@ Isto vai descarregar:
 ### 3.1 Criar Base de Dados PostgreSQL
 
 #### Via pgAdmin 4 (Interface Gráfica)
+
 1. Abra **pgAdmin 4** no menu Iniciar
 2. Clique em **Servers** > **PostgreSQL** (lado esquerdo)
 3. Clique **Databases** com botão direito → **Create** → **Database...**
@@ -147,6 +166,7 @@ Isto vai descarregar:
 5. Clique **Save**
 
 #### Ou via Terminal (Linha de Comando)
+
 ```powershell
 # Abra PowerShell como administrador
 psql -U postgres
@@ -157,6 +177,7 @@ CREATE DATABASE kitanda_db;
 ```
 
 ### 3.2 Copiar ou Criar Arquivo .env
+
 Na pasta `back-end/`, crie ou edite `.env`:
 
 ```env
@@ -182,10 +203,12 @@ SMS_SENDER_ID=Kitanda
 ```
 
 **IMPORTANTE:** Substitua:
+
 - `Ilevuosnof@!` pela sua password do PostgreSQL
 - `sua-chave-super-secreta...` por uma chave aleatória forte
 
 ### 3.3 Executar Migrações de Base de Dados (Alembic)
+
 ```powershell
 # Certifique-se que está em: C:\Projetos\Kitanda\back-end
 
@@ -197,11 +220,13 @@ alembic upgrade head
 ```
 
 Se tudo correr bem, verá:
+
 ```
 INFO [alembic.runtime.migration] Running upgrade abc1234 -> def5678, ...
 ```
 
 ### 3.4 Popular Base de Dados com Dados de Teste (Opcional)
+
 ```powershell
 # Opção A: Com dados de teste predefinidos
 python seed_render.py
@@ -218,18 +243,22 @@ python check_db.py
 ## 🎨 FASE 4: Configurar Frontend
 
 ### 4.1 Verificar Configuração de API
+
 Abra [front-end/public/js/api.js](front-end/public/js/api.js#L1)
 
 Confirme que tem:
+
 ```javascript
-const API_BASE_URL = 'http://localhost:8000/api/v1';
+const API_BASE_URL = "http://localhost:8000/api/v1";
 ```
 
 **Notas:**
+
 - Em desenvolvimento: use `localhost:8000`
 - Em produção: use URL do servidor (ex: `https://seu-dominio.com/api/v1`)
 
 ### 4.2 Estrutura de Pastas
+
 ```
 front-end/public/
 ├── index.html              (Página inicial)
@@ -255,6 +284,7 @@ front-end/public/
 Abra **dois terminais** no VS Code:
 
 **Terminal 1 - Backend (FastAPI):**
+
 ```powershell
 cd C:\Projetos\Kitanda\back-end
 .\venv\Scripts\activate
@@ -262,6 +292,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 Deve ver:
+
 ```
 INFO:     Uvicorn running on http://0.0.0.0:8000
 INFO:     Application startup complete
@@ -273,6 +304,7 @@ INFO:     Application startup complete
 ### Passo 2️⃣: Ligar o Frontend
 
 No VS Code:
+
 1. Vá a: `front-end/public/index.html`
 2. Clique com botão direito → **Open with Live Server**
 3. O navegador abre automaticamente em `http://127.0.0.1:5500`
@@ -286,29 +318,33 @@ No VS Code:
 ### 6.1 Verificar Conectividade
 
 **Backend funcionando:**
+
 ```bash
 # Abra navegador e visite:
 http://localhost:8000/docs
 ```
+
 Se vir a página do Swagger com os endpoints, ✓ Backend OK
 
 **Frontend funcionando:**
+
 ```bash
 # Abra navegador e visite:
 http://127.0.0.1:5500
 ```
+
 Se vir a página de login, ✓ Frontend OK
 
 ### 6.2 Testar Login
 
 Use uma destas contas de teste (ver [DADOS_TESTE.md](DADOS_TESTE.md)):
 
-| Email | Senha | Tipo |
-|-------|-------|------|
+| Email                 | Senha         | Tipo      |
+| --------------------- | ------------- | --------- |
 | `comprador@teste.com` | `password123` | Comprador |
-| `vendedor@teste.com` | `password123` | Vendedor |
-| `empresa@teste.com` | `password123` | Empresa |
-| `admin@kitanda.com` | `password123` | Admin |
+| `vendedor@teste.com`  | `password123` | Vendedor  |
+| `empresa@teste.com`   | `password123` | Empresa   |
+| `admin@kitanda.com`   | `password123` | Admin     |
 
 ### 6.3 Testar Fluxo Completo
 
@@ -325,6 +361,7 @@ Use uma destas contas de teste (ver [DADOS_TESTE.md](DADOS_TESTE.md)):
 ### ❌ Erro: "ModuleNotFoundError: No module named 'app'"
 
 **Solução:**
+
 ```powershell
 # Confirme que está na pasta back-end
 cd C:\Projetos\Kitanda\back-end
@@ -339,6 +376,7 @@ pip install -r requirements.txt
 ### ❌ Erro: "could not connect to server: Connection refused"
 
 **Solução:**
+
 1. Confirme que PostgreSQL está a correr (Services do Windows)
 2. Confirme DATABASE_URL no `.env` está correto
 3. Verifique que a base de dados `kitanda_db` existe:
@@ -350,6 +388,7 @@ pip install -r requirements.txt
 
 **Solução:**
 Isto significa que o backend não está a responder. Verifique:
+
 1. Backend está a correr em `http://localhost:8000`?
 2. Em [back-end/app/main.py](back-end/app/main.py#L25), `allow_origins=["*"]` está ativo?
 3. API_BASE_URL em [front-end/public/js/api.js](front-end/public/js/api.js#L3) é correto?
@@ -358,6 +397,7 @@ Isto significa que o backend não está a responder. Verifique:
 
 **Solução:**
 Execute como administrador:
+
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
@@ -372,6 +412,7 @@ Python não foi adicionado ao PATH. Reinstale Python e **marque "Add python.exe 
 ### ❌ Livreload não funciona no Frontend
 
 **Solução:**
+
 1. Feche a abas e reabra `http://127.0.0.1:5500`
 2. Ou use a extensão Live Server do VS Code
 3. Ou instale: `npm install -g live-server`
@@ -462,16 +503,16 @@ Kitanda/
 
 ## ⏱️ Tempo Estimado Total
 
-| Fase | Tempo | Notas |
-|------|-------|-------|
-| Instalar ferramentas | 20-30 min | Primeira vez |
-| Clonar repositório | 2-5 min | Depende da conexão |
-| Configurar backend | 10-15 min | Includes pip install |
-| Configurar BD | 5-10 min | Criar BD + migrações |
-| Configurar frontend | 2-3 min | Verificação apenas |
-| Iniciar aplicação | 2-3 min | Começar servidores |
-| Testar | 5-10 min | Validação completa |
-| **TOTAL** | **45-75 min** | Primeira vez |
+| Fase                 | Tempo         | Notas                |
+| -------------------- | ------------- | -------------------- |
+| Instalar ferramentas | 20-30 min     | Primeira vez         |
+| Clonar repositório   | 2-5 min       | Depende da conexão   |
+| Configurar backend   | 10-15 min     | Includes pip install |
+| Configurar BD        | 5-10 min      | Criar BD + migrações |
+| Configurar frontend  | 2-3 min       | Verificação apenas   |
+| Iniciar aplicação    | 2-3 min       | Começar servidores   |
+| Testar               | 5-10 min      | Validação completa   |
+| **TOTAL**            | **45-75 min** | Primeira vez         |
 
 ---
 
